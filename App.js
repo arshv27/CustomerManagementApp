@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import ReduxThunk from 'redux-thunk';
 
 import authReducer from './store/reducers/auth';
-import MainNavigator from './navigation/MainNavigator';
+import NavigationContainer from "./navigation/NavigationContainer";
 
 enableScreens();
 
@@ -16,8 +16,8 @@ const store  = createStore(rootReducer,applyMiddleware(ReduxThunk));
 export default function App() {
 
     return (
-      <Provider store = {store}>
-      <MainNavigator />
-      </Provider>
-  );
+        <Provider store={store}>
+            <NavigationContainer />
+        </Provider>
+    );
 }

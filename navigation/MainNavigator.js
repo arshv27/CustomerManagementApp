@@ -1,15 +1,17 @@
 import React from 'react';
-import {Button,Text} from 'react-native'
+import { Platform, SafeAreaView, Button, View} from 'react-native'
 import {createAppContainer,createSwitchNavigator} from 'react-navigation'
 import {createStackNavigator} from 'react-navigation-stack'
-import {createDrawerNavigator} from 'react-navigation-drawer'
-
+import {createDrawerNavigator,DrawerNavigatorItems} from 'react-navigation-drawer'
+import { useDispatch } from 'react-redux';
 
 import LoginScreen from '../screens/LoginScreen'
 import HomeScreen from '../screens/HomeScreen'
 import ProfileScreen from '../screens/ProfileScreen'
 import DutyScreen from '../screens/DutyScreen'
+import StartupScreen from "../screens/StartupScreen";
 
+import * as authActions from '../store/actions/auth';
 import Colors from "../constants/Colors";
 
 const defaultNavOptions = {
@@ -21,7 +23,9 @@ const defaultNavOptions = {
 
 const HomeStack = createStackNavigator(
     {Home : HomeScreen},
-    {navigationOptions : defaultNavOptions}
+    {
+        defaultNavigationOptions: defaultNavOptions
+    }
 );
 
 const ProfileStack = createStackNavigator(
@@ -54,7 +58,30 @@ const MainDrawerNavigator = createDrawerNavigator(
                 drawerLabel: 'Duty Mode'
               }
             }
+        },
+    {
+        contentOptions: {
+            activeTintColor: Colors.primary
+        },
+        contentComponent: props => {
+            const dispatch = useDispatch();
+            return (
+                <View style={{ flex: 1, paddingTop: 20 }}>
+                    <SafeAreaView forceInset={{ top: 'always', horizontal: 'never' }}>
+                        <DrawerNavigatorItems {...props} />
+                        <Button
+                            title="Logout"
+                            color={Colors.primary}
+                            onPress={() => {
+                                dispatch(authActions.logout());
+                                // props.navigation.navigate('Auth');
+                            }}
+                        />
+                    </SafeAreaView>
+                </View>
+            );
         }
+    }
     );
 
 const AuthNavigator = createStackNavigator(
@@ -63,8 +90,9 @@ const AuthNavigator = createStackNavigator(
 );
 
 const MainNavigator = createSwitchNavigator({
-  Auth : AuthNavigator,
-  MainApp : MainDrawerNavigator
+    Startup : StartupScreen,
+    Auth : AuthNavigator,
+    MainApp : MainDrawerNavigator
 });
 
 export default  createAppContainer(MainNavigator);
