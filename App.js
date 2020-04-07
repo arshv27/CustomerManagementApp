@@ -1,13 +1,23 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
 import { enableScreens } from 'react-native-screens';
+import { createStore, combineReducers, applyMiddleware } from 'redux';
+import { Provider } from 'react-redux';
+import ReduxThunk from 'redux-thunk';
 
-import MainNavigator from './navigation/FirstNavigator';
+import authReducer from './store/reducers/auth';
+import MainNavigator from './navigation/MainNavigator';
 
 enableScreens();
 
+const rootReducer = combineReducers({auth : authReducer});
+
+const store  = createStore(rootReducer,applyMiddleware(ReduxThunk));
+
 export default function App() {
-  return (
-    <MainNavigator />
+
+    return (
+      <Provider store = {store}>
+      <MainNavigator />
+      </Provider>
   );
 }
