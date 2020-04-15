@@ -14,31 +14,24 @@ const defaultNavOptions = {
     headerTintColor: Platform.OS === 'android' ? 'white' : Colors.primary
 };
 
-const AttendanceStack = createStackNavigator(
-    {Attendance : AttendanceScreen},
-    {navigationOptions : defaultNavOptions}
-);
-
-const MarkStack = createStackNavigator(
-    {Duty : MarkScreen},
-    {navigationOptions : defaultNavOptions}
-);
-
-const LeaveStack = createStackNavigator(
-    {Duty : LeaveScreen},
-    {navigationOptions : defaultNavOptions}
-);
-
-const StatusStack = createStackNavigator(
-    {Duty : StatusScreen},
-    {navigationOptions : defaultNavOptions}
-);
 
 const AttendanceNavigator = createStackNavigator({
-    Attendance : AttendanceStack,
-    Mark: MarkStack,
-    Leave: LeaveStack,
-    Status: StatusStack,
+    Attendance : {
+        screen: AttendanceScreen,
+        navigationOptions: defaultNavOptions,
+    },
+    Mark: {
+        screen: MarkScreen,
+        navigationOptions: defaultNavOptions,
+    },
+    Leave: {
+        screen: LeaveScreen,
+        navigationOptions: defaultNavOptions,
+    },
+    Status: {
+        screen: StatusScreen,
+        navigationOptions: defaultNavOptions,
+    },
 });
 
 export default createAppContainer(AttendanceNavigator);
