@@ -17,12 +17,6 @@ MarkScreen.navigationOptions = navData => {
             backgroundColor: Platform.OS === 'android' ? Colors.primary : ''
         },
         headerTintColor: Platform.OS === 'android' ? 'white' : Colors.primary,
-        headerLeft : () => (
-            <Button title = "Menu"
-                    color = {Colors.primary}
-                    onPress = {() => navData.navigation.toggleDrawer()}
-            />
-        ),
     }
 };
 

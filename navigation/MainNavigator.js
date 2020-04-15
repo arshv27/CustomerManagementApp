@@ -17,6 +17,7 @@ import StatusScreen from "../screens/Attendance/Status";
 
 import * as authActions from '../store/actions/auth';
 import Colors from "../constants/Colors";
+import AttendanceNavigator from "./Attendance/AttendanceNavigator";
 
 const defaultNavOptions = {
     headerStyle: {
@@ -37,30 +38,12 @@ const ProfileStack = createStackNavigator(
     {navigationOptions : defaultNavOptions}
 );
 
-const AttendanceStack = createStackNavigator(
-    {Attendance : AttendanceScreen},
-    {navigationOptions : defaultNavOptions}
-);
-
 const DutyStack = createStackNavigator(
     {Duty : DutyScreen},
     {navigationOptions : defaultNavOptions}
 );
 
-const MarkStack = createStackNavigator(
-    {Duty : MarkScreen},
-    {navigationOptions : defaultNavOptions}
-);
 
-const LeaveStack = createStackNavigator(
-    {Duty : LeaveScreen},
-    {navigationOptions : defaultNavOptions}
-);
-
-const StatusStack = createStackNavigator(
-    {Duty : StatusScreen},
-    {navigationOptions : defaultNavOptions}
-);
 
 const MainDrawerNavigator = createDrawerNavigator(
     {
@@ -77,7 +60,7 @@ const MainDrawerNavigator = createDrawerNavigator(
               }
             },
             Attendance : {
-                screen: AttendanceStack,
+                screen: AttendanceNavigator,
                 navigationOptions:{
                     drawerLabel: 'Attendance '
                 }
@@ -87,15 +70,6 @@ const MainDrawerNavigator = createDrawerNavigator(
               navigationOptions:{
                 drawerLabel: 'Duty Mode'
               }
-            },
-            Mark : {
-                screen: MarkStack,
-            },
-            Leave : {
-                screen: LeaveStack,
-            },
-            Status : {
-                screen: StatusStack,
             },
         },
     {

@@ -10,19 +10,13 @@ const LeaveScreen = props => {
     )
 };
 
-LeaveScreen.navigationOptions = navData => {
+LeaveScreen.navigationOptions = () => {
     return {
         headerTitle : 'Apply for Leave',
         headerStyle: {
             backgroundColor: Platform.OS === 'android' ? Colors.primary : ''
         },
         headerTintColor: Platform.OS === 'android' ? 'white' : Colors.primary,
-        headerLeft : () => (
-            <Button title = "Menu"
-                    color = {Colors.primary}
-                    onPress = {() => navData.navigation.toggleDrawer()}
-            />
-        ),
     }
 };
 
