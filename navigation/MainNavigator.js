@@ -14,6 +14,7 @@ import SetupProfileScreen from "../screens/SetupProfileScreen";
 
 import * as authActions from '../store/actions/auth';
 import Colors from "../constants/Colors";
+import AttendanceNavigator from "./Attendance/AttendanceNavigator";
 
 const defaultNavOptions = {
     headerStyle: {
@@ -39,6 +40,8 @@ const DutyStack = createStackNavigator(
     {navigationOptions : defaultNavOptions}
 );
 
+
+
 const MainDrawerNavigator = createDrawerNavigator(
     {
             Home : {
@@ -53,12 +56,18 @@ const MainDrawerNavigator = createDrawerNavigator(
                 drawerLabel: 'Profile '
               }
             },
+            Attendance : {
+                screen: AttendanceNavigator,
+                navigationOptions:{
+                    drawerLabel: 'Attendance '
+                }
+            },
             Duty : {
               screen: DutyStack,
               navigationOptions:{
                 drawerLabel: 'Duty Mode'
               }
-            }
+            },
         },
     {
         contentOptions: {
@@ -70,14 +79,18 @@ const MainDrawerNavigator = createDrawerNavigator(
                 <View style={{ flex: 1, paddingTop: 20 }}>
                     <SafeAreaView forceInset={{ top: 'always', horizontal: 'never' }}>
                         <DrawerNavigatorItems {...props} />
-                        <Button
-                            title="Logout"
-                            color={Colors.primary}
-                            onPress={() => {
-                                dispatch(authActions.logout());
-                                // props.navigation.navigate('Auth');
-                            }}
-                        />
+                        <View style = {{
+                            alignItems: 'center',
+                        }}>
+                            <Button
+                                title="Logout "
+                                color={Colors.primary}
+                                onPress={() => {
+                                    dispatch(authActions.logout());
+                                    // props.navigation.navigate('Auth');
+                                }}
+                            />
+                        </View>
                     </SafeAreaView>
                 </View>
             );
