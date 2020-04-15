@@ -12,20 +12,20 @@ const AttendanceScreen = props => {
             <View style = {styles.buttonContainer}>
                 <View style = {styles.buttons}>
                     <Button
-                        title = "Apply for Leave"
+                        title = "Mark Attendance"
                         onPress= {
                             () => {
-                                props.navigation.navigate({routeName: 'Leave' })
+                                props.navigation.navigate({routeName: 'Mark' })
                             }
                         }
                     />
                 </View>
                 <View style = {styles.buttons}>
                     <Button
-                        title = "Mark Attendance"
+                        title = "Apply for Leave"
                         onPress= {
                             () => {
-                                props.navigation.navigate({routeName: 'Mark' })
+                                props.navigation.navigate({routeName: 'Leave' })
                             }
                         }
                     />
