@@ -10,7 +10,10 @@ import HomeScreen from '../screens/HomeScreen'
 import ProfileScreen from '../screens/ProfileScreen'
 import DutyScreen from '../screens/DutyScreen'
 import StartupScreen from "../screens/StartupScreen";
-import AttendanceScreen from '../screens/AttendanceScreen'
+import AttendanceScreen from '../screens/Attendance/AttendanceScreen'
+import MarkScreen from "../screens/Attendance/Mark";
+import LeaveScreen from "../screens/Attendance/Leave";
+import StatusScreen from "../screens/Attendance/Status";
 
 import * as authActions from '../store/actions/auth';
 import Colors from "../constants/Colors";
@@ -44,6 +47,21 @@ const DutyStack = createStackNavigator(
     {navigationOptions : defaultNavOptions}
 );
 
+const MarkStack = createStackNavigator(
+    {Duty : MarkScreen},
+    {navigationOptions : defaultNavOptions}
+);
+
+const LeaveStack = createStackNavigator(
+    {Duty : LeaveScreen},
+    {navigationOptions : defaultNavOptions}
+);
+
+const StatusStack = createStackNavigator(
+    {Duty : StatusScreen},
+    {navigationOptions : defaultNavOptions}
+);
+
 const MainDrawerNavigator = createDrawerNavigator(
     {
             Home : {
@@ -61,7 +79,7 @@ const MainDrawerNavigator = createDrawerNavigator(
             Attendance : {
                 screen: AttendanceStack,
                 navigationOptions:{
-                    drawerLabel: 'Attendance'
+                    drawerLabel: 'Attendance '
                 }
             },
             Duty : {
@@ -69,7 +87,16 @@ const MainDrawerNavigator = createDrawerNavigator(
               navigationOptions:{
                 drawerLabel: 'Duty Mode'
               }
-            }
+            },
+            Mark : {
+                screen: MarkStack,
+            },
+            Leave : {
+                screen: LeaveStack,
+            },
+            Status : {
+                screen: StatusStack,
+            },
         },
     {
         contentOptions: {
@@ -85,8 +112,7 @@ const MainDrawerNavigator = createDrawerNavigator(
                             alignItems: 'center',
                         }}>
                             <Button
-                                // TODO: Fix the button text.
-                                title="Logoutt"
+                                title="Logout "
                                 color={Colors.primary}
                                 onPress={() => {
                                     dispatch(authActions.logout());

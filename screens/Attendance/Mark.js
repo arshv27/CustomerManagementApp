@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
-import Colors from "../constants/Colors";
+import Colors from "../../constants/Colors";
 
 const MarkScreen = props => {
     return(

@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
-import Colors from "../constants/Colors";
+import Colors from "../../constants/Colors";
 
 const AttendanceScreen = props => {
     return(
@@ -11,10 +11,24 @@ const AttendanceScreen = props => {
             </View>
             <View style = {styles.buttonContainer}>
                 <View style = {styles.buttons}>
-                    <Button title = "Apply for Leave" />
+                    <Button
+                        title = "Apply for Leave"
+                        onPress= {
+                            () => {
+                                props.navigation.navigate({routeName: 'Leave' })
+                            }
+                        }
+                    />
                 </View>
                 <View style = {styles.buttons}>
-                    <Button title = "Mark Attendance" />
+                    <Button
+                        title = "Mark Attendance"
+                        onPress= {
+                            () => {
+                                props.navigation.navigate({routeName: 'Mark' })
+                            }
+                        }
+                    />
                 </View>
             </View>
             <View style = {styles.prompt2}>
@@ -22,7 +36,14 @@ const AttendanceScreen = props => {
             </View>
             <View style = {styles.buttonContainer}>
                 <View style = {styles.buttons}>
-                    <Button title = "Show Status" />
+                    <Button
+                        title = "Show Status"
+                        onPress= {
+                            () => {
+                                props.navigation.navigate({routeName: 'Leave' })
+                            }
+                        }
+                    />
                 </View>
             </View>
         </View>
