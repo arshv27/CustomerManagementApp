@@ -10,6 +10,7 @@ import HomeScreen from '../screens/HomeScreen'
 import ProfileScreen from '../screens/ProfileScreen'
 import DutyScreen from '../screens/DutyScreen'
 import StartupScreen from "../screens/StartupScreen";
+import SetupProfileScreen from "../screens/SetupProfileScreen";
 
 import * as authActions from '../store/actions/auth';
 import Colors from "../constants/Colors";
@@ -85,7 +86,10 @@ const MainDrawerNavigator = createDrawerNavigator(
     );
 
 const AuthNavigator = createStackNavigator(
-    {Auth : LoginScreen},
+    {
+        Auth : LoginScreen,
+        SetupProfile : SetupProfileScreen
+    },
     {defaultNavigationOptions : defaultNavOptions}
 );
 
