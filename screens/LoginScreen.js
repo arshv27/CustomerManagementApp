@@ -82,10 +82,7 @@ const AuthScreen = props => {
         setIsLoading(true);
         try {
             await dispatch(action);
-            if(isSignup){
-                props.navigation.replace('SetupProfile');
-            }
-            else props.navigation.navigate('MainApp');
+            props.navigation.navigate('MainApp');
         } catch (err) {
             setError(err.message);
             setIsLoading(false);

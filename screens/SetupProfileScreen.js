@@ -1,5 +1,5 @@
-import React, { useEffect, useCallback, useReducer } from 'react';
-import { StyleSheet, Text, View, Button,Alert, KeyboardAvoidingView,Platform,ScrollView} from 'react-native';
+import React, { useState, useEffect, useCallback, useReducer } from 'react';
+import { StyleSheet, Text, View, Button,Alert, KeyboardAvoidingView,Platform,ScrollView, ActivityIndicator} from 'react-native';
 import Colors from "../constants/Colors";
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -35,40 +35,73 @@ const formReducer = (state, action) => {
 
 const SetupProfileScreen =  props => {
 
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    const old_firstName = useSelector(state => state.profile.firstName);
+    const old_lastName = useSelector(state => state.profile.lastName);
+    const old_employeeID = useSelector(state => state.profile.employeeID);
+
     const dispatch = useDispatch();
 
     const [formState, dispatchFormState] = useReducer(formReducer, {
         inputValues: {
-            firstName: '',
-            lastName: '',
-            employeeID: ''
+            firstName: old_firstName,
+            lastName: old_lastName,
+            employeeID: old_employeeID
         },
         inputValidities: {
-            firstName: false,
-            lastName: false,
-            employeeID: false
+            firstName: old_firstName != null,
+            lastName: old_lastName != null,
+            employeeID: old_employeeID != null
         },
         formIsValid: false
     });
 
-    const submitHandler = useCallback(() => {
+    useEffect(() => {
+        if (error) {
+            Alert.alert('An error occurred!', error, [{ text: 'Okay' }]);
+        }
+    }, [error]);
+
+    const submitHandler = useCallback(async() => {
         if (!formState.formIsValid) {
             Alert.alert('Wrong input!', 'Please check the errors in the form.', [
                 { text: 'Okay' }
             ]);
             return;
         }
+        setError(null);
+        setIsLoading(true);
 
-        dispatch(
-            profileActions.createProfile(
-                formState.inputValues.firstName,
-                formState.inputValues.lastName,
-                formState.inputValues.employeeID,
-            )
-        );
+        try {
+            if(old_firstName == null){
+                await dispatch(
+                    profileActions.createProfile(
+                        formState.inputValues.firstName,
+                        formState.inputValues.lastName,
+                        formState.inputValues.employeeID,
+                    )
+                );
+            }
+            else{
+                await dispatch(
+                    profileActions.updateProfile(
+                        formState.inputValues.firstName,
+                        formState.inputValues.lastName,
+                        formState.inputValues.employeeID,
+                    )
+                );
+            }
+            
+            props.navigation.goBack();
+        }
+        catch(err){
+            setError(err.message);
+        }
+        setIsLoading(false);
+    }, [dispatch, old_firstName, formState]);
 
-        props.navigation.navigate('MainApp');
-    }, [dispatch, formState]);
 
     const inputChangeHandler = useCallback(
         (inputIdentifier, inputValue, inputValidity) => {
@@ -81,6 +114,14 @@ const SetupProfileScreen =  props => {
         },
         [dispatchFormState]
     );
+
+    if(isLoading){
+        return (
+            <View style={styles.centered}>
+                <ActivityIndicator size="large" color={Colors.primary} />
+            </View>
+        );
+    }
 
     return (
             <KeyboardAvoidingView
@@ -99,7 +140,7 @@ const SetupProfileScreen =  props => {
                             autoCorrect
                             returnKeyType="next"
                             onInputChange={inputChangeHandler}
-                            initialValue= ""
+                            initialValue= {old_firstName != null ? old_firstName : ""}
                             initiallyValid= {false}
                             required
                         />
@@ -110,7 +151,7 @@ const SetupProfileScreen =  props => {
                             keyboardType="default"
                             returnKeyType="next"
                             onInputChange={inputChangeHandler}
-                            initialValue={''}
+                            initialValue= {old_lastName != null ? old_lastName : ""}
                             initiallyValid={false}
                             required
                         />
@@ -121,7 +162,7 @@ const SetupProfileScreen =  props => {
                             keyboardType="default"
                             returnKeyType="next"
                             onInputChange={inputChangeHandler}
-                            initialValue={''}
+                            initialValue={old_employeeID != null ? old_employeeID : ""}
                             initiallyValid={false}
                             required
                         />
@@ -130,15 +171,6 @@ const SetupProfileScreen =  props => {
                 <Button title = "Save" onPress = {submitHandler}/>
             </KeyboardAvoidingView>
     );
-
-
-
-    // return(
-    //   <View style = {StyleSheet.screen} >
-    //       <Text> Profile Setup kar le Bhai, naya hai tu.</Text>
-    //   </View>
-    //
-    // );
 };
 
 SetupProfileScreen.navigationOptions = navData => {
@@ -151,7 +183,7 @@ SetupProfileScreen.navigationOptions = navData => {
       headerRight : () => (
           <Button title = "Skip"
                   color = {Colors.primary}
-                  onPress = {() => navData.navigation.navigate('MainApp')}
+                  onPress = {() => navData.navigation.goBack()}
           />
       )
   }

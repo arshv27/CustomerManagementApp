@@ -31,7 +31,9 @@ const HomeStack = createStackNavigator(
 );
 
 const ProfileStack = createStackNavigator(
-    {Profile : ProfileScreen},
+    {Profile : ProfileScreen,
+                   SetupProfile : SetupProfileScreen
+    },
     {navigationOptions : defaultNavOptions}
 );
 
@@ -100,8 +102,7 @@ const MainDrawerNavigator = createDrawerNavigator(
 
 const AuthNavigator = createStackNavigator(
     {
-        Auth : LoginScreen,
-        SetupProfile : SetupProfileScreen
+        Auth : LoginScreen
     },
     {defaultNavigationOptions : defaultNavOptions}
 );
