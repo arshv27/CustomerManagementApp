@@ -36,4 +36,6 @@ const PRODUCTS = [
         {'Load Table' : '350 Kg', 'Rated Power' : '3 KVA'},
         250000,
     ),
-]
+];
+
+export default PRODUCTS;
