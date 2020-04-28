@@ -5,6 +5,7 @@ import Card from "../../components/UI/Card";
 import Colors from "../../constants/Colors";
 import * as profileActions from "../../store/actions/profile";
 import {useDispatch, useSelector} from "react-redux";
+import {LinearGradient} from "expo-linear-gradient";
 
 const AttendanceScreen = props => {
 
@@ -56,7 +57,8 @@ const AttendanceScreen = props => {
 
     return(
         <View style = {styles.screen} >
-                <Text style = {{fontSize : 25, fontWeight : 'bold',marginBottom : 200,marginTop: 30}}> Welcome, {firstName}! </Text>
+            <LinearGradient colors={['#ffedff', '#ffe3ff']} style={styles.gradient}>
+                <Text style = {{fontSize : 25, fontWeight : 'bold',marginBottom : 125,marginTop: 50}}> Welcome, {firstName}! </Text>
                 <Card style = {styles.cardStyle}>
                     <Button
                         title = "Mark Attendance"
@@ -74,6 +76,7 @@ const AttendanceScreen = props => {
                         color = {Colors.primary}
                     />
                 </Card>
+            </LinearGradient>
         </View>
 
     )
@@ -100,19 +103,16 @@ AttendanceScreen.navigationOptions = navData => {
 const styles = StyleSheet.create({
     screen: {
         flex: 1,
-        alignItems: 'center'
-    },
-    prompt: {
-        flex: 2,
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginTop: 30,
     },
     cardStyle : {
         width : '70%',
         height : '20%',
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    gradient: {
+        flex: 1,
+        alignItems: 'center'
     },
 });
 

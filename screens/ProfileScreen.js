@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
   },
   txtstyle : {
       fontSize: 20,
-      paddingVertical: 15
+      paddingVertical: 10
   },
   cardStyle : {
       width : '80%',

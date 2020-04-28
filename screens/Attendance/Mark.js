@@ -5,7 +5,10 @@ import Colors from "../../constants/Colors";
 const MarkScreen = props => {
     return(
         <View style = {styles.screen} >
-            <Text> Mark your Attendance Here! </Text>
+            <Button title = "Check in"
+                onPress = {() => {alert("Attendance marked successfully")}}
+            />
+            <Text> You are 539 metres away from office! </Text>
         </View>
     )
 };
@@ -24,7 +27,8 @@ const styles = StyleSheet.create({
     screen: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        marginVertical : 15
     }
 });
 

@@ -17,7 +17,6 @@ import MapScreen from "../screens/MapScreen";
 import Home from '../screens/Home';
 
 import CreateTask from '../screens/CreateTask';
-import TodoStore from '../data/TodoStore';
 
 import * as authActions from '../store/actions/auth';
 import Colors from "../constants/Colors";
@@ -82,18 +81,19 @@ const MainDrawerNavigator = createDrawerNavigator(
                     drawerLabel: 'Attendance '
                 }
             },
+            Duty : {
+                screen: DutyStack,
+                navigationOptions:{
+                    drawerLabel: 'Duty Mode'
+                }
+            },
             Calendar : {
                 screen: CalendarStack,
                 navigationOptions:{
                     drawerLabel: 'Calendar '
                 }
             },
-            Duty : {
-              screen: DutyStack,
-              navigationOptions:{
-                drawerLabel: 'Duty Mode'
-              }
-            },
+
         },
     {
         contentOptions: {
