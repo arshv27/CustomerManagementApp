@@ -1,12 +1,15 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { enableScreens } from 'react-native-screens';
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import ReduxThunk from 'redux-thunk';
+import TodoStore from './data/TodoStore';
 
 import authReducer from './store/reducers/auth';
 import NavigationContainer from "./navigation/NavigationContainer";
 import profileReducer from './store/reducers/profile';
+
+import * as Permissions from 'expo-permissions';
 
 enableScreens();
 
@@ -14,11 +17,31 @@ const rootReducer = combineReducers({auth : authReducer, profile : profileReduce
 
 const store  = createStore(rootReducer,applyMiddleware(ReduxThunk));
 
-export default function App() {
+export default class App extends Component {
 
-    return (
-        <Provider store={store}>
-            <NavigationContainer />
-        </Provider>
-    );
+  async componentWillMount() {
+    await this._askForCalendarPermissions();
+    await this._askForReminderPermissions();
+  }
+
+  _askForCalendarPermissions = async () => {
+    await Permissions.askAsync(Permissions.CALENDAR);
+  };
+
+  _askForReminderPermissions = async () => {
+    if (Platform.OS === 'android') {
+      return true;
+    }
+
+    await Permissions.askAsync(Permissions.REMINDERS);
+  };
+
+  	render() {
+  		return (
+	        <Provider store={store}>
+	            <NavigationContainer />
+	        </Provider>
+    	);
+  	}
+    
 }
