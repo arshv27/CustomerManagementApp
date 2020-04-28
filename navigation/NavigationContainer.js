@@ -2,6 +2,8 @@ import React, { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { NavigationActions } from 'react-navigation';
 
+import TodoStore from '../data/TodoStore';
+
 import MainNavigator from "./MainNavigator";
 
 const NavigationContainer = props => {
@@ -16,7 +18,11 @@ const NavigationContainer = props => {
         }
     }, [isAuth]);
 
-    return <MainNavigator ref={navRef} />;
+    return (
+        <TodoStore>
+            <MainNavigator ref={navRef} />
+        </TodoStore>
+    );
 };
 
 export default NavigationContainer;

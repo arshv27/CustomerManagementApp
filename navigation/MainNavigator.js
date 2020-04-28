@@ -5,6 +5,8 @@ import {createStackNavigator} from 'react-navigation-stack'
 import {createDrawerNavigator,DrawerNavigatorItems} from 'react-navigation-drawer'
 import { useDispatch } from 'react-redux';
 
+import * as Permissions from 'expo-permissions';
+
 import LoginScreen from '../screens/LoginScreen'
 import HomeScreen from '../screens/HomeScreen'
 import ProfileScreen from '../screens/ProfileScreen'
@@ -12,6 +14,10 @@ import DutyScreen from '../screens/DutyScreen'
 import StartupScreen from "../screens/StartupScreen";
 import SetupProfileScreen from "../screens/SetupProfileScreen";
 import MapScreen from "../screens/MapScreen";
+import Home from '../screens/Home';
+
+import CreateTask from '../screens/CreateTask';
+import TodoStore from '../data/TodoStore';
 
 import * as authActions from '../store/actions/auth';
 import Colors from "../constants/Colors";
@@ -45,6 +51,15 @@ const DutyStack = createStackNavigator(
     {navigationOptions : defaultNavOptions}
 );
 
+const CalendarStack = createStackNavigator(
+  {
+    Home: Home,
+    CreateTask: CreateTask,
+  },
+  {
+    navigationOptions : defaultNavOptions,
+  }
+);
 
 
 const MainDrawerNavigator = createDrawerNavigator(
@@ -65,6 +80,12 @@ const MainDrawerNavigator = createDrawerNavigator(
                 screen: AttendanceNavigator,
                 navigationOptions:{
                     drawerLabel: 'Attendance '
+                }
+            },
+            Calendar : {
+                screen: CalendarStack,
+                navigationOptions:{
+                    drawerLabel: 'Calendar '
                 }
             },
             Duty : {
