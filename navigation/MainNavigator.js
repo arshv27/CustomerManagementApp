@@ -11,6 +11,7 @@ import ProfileScreen from '../screens/ProfileScreen'
 import DutyScreen from '../screens/DutyScreen'
 import StartupScreen from "../screens/StartupScreen";
 import SetupProfileScreen from "../screens/SetupProfileScreen";
+import MapScreen from "../screens/MapScreen";
 
 import * as authActions from '../store/actions/auth';
 import Colors from "../constants/Colors";
@@ -38,7 +39,9 @@ const ProfileStack = createStackNavigator(
 );
 
 const DutyStack = createStackNavigator(
-    {Duty : DutyScreen},
+    {Duty : DutyScreen,
+                    Map : MapScreen
+    },
     {navigationOptions : defaultNavOptions}
 );
 

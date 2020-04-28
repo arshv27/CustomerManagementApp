@@ -93,7 +93,7 @@ const SetupProfileScreen =  props => {
                     )
                 );
             }
-            
+
             props.navigation.goBack();
         }
         catch(err){

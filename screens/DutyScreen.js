@@ -6,6 +6,9 @@ const DutyScreen = props => {
   return(
     <View style = {styles.screen} >
       <Text> It's time we tracked you!</Text>
+      <Button title = {"Open Map"}
+              onPress = {() => {props.navigation.navigate('Map')}}
+      />
     </View>
   )
 };
