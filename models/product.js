@@ -5,5 +5,7 @@ class Product {
         this.imageAdd = imageAdd;
         this.description = description;
         this.base_price = base_price;
-    }
-}
+    };
+};
+
+export default Product;

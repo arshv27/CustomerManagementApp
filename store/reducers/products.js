@@ -1,5 +1,7 @@
+import PRODUCTS from "../../data/current-data";
+
 const initialState = {
-    availableProducts: [],
+    availableProducts: PRODUCTS,
 };
 
 export default (state = initialState, action) => {

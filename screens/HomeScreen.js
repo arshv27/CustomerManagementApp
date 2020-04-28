@@ -1,13 +1,22 @@
 import React from 'react';
 import { StyleSheet, Text, View, Button, FlatList } from 'react-native';
 import Colors from "../constants/Colors";
+import { useSelector } from "react-redux";
 
 const HomeScreen = props => {
-  return(
-    <View style = {styles.screen} >
-        <FlatList />
-      <Text> The Home Page! </Text>
-    </View>
+    const productsList = useSelector(state => state.products.availableProducts);
+    return(
+        <View style = {styles.screen} >
+
+            <FlatList
+                data = { productsList }
+                keyExtractor = { item  => item.id }
+                renderItem = {
+                    itemData => <Text> { itemData.item.title } </Text>
+                }
+            />
+          <Text> The Home Page! </Text>
+        </View>
   )
 };
 
