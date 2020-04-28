@@ -787,7 +787,7 @@ export default class Home extends Component {
 
 Home.navigationOptions = navData => {
   return {
-    headerTitle : 'Profile',
+    headerTitle : 'Calendar',
     headerStyle: {
       backgroundColor: Platform.OS === 'android' ? Colors.primary : ''
     },

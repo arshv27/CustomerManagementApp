@@ -1,51 +1,79 @@
-import React from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import React, {useCallback, useEffect, useState} from 'react';
+import {StyleSheet, Text, View, Button, ActivityIndicator} from 'react-native';
+
+import Card from "../../components/UI/Card";
 import Colors from "../../constants/Colors";
+import * as profileActions from "../../store/actions/profile";
+import {useDispatch, useSelector} from "react-redux";
 
 const AttendanceScreen = props => {
+
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    const dispatch = useDispatch();
+
+    const firstName = useSelector(state => state.profile.firstName);
+
+    const loadProfile = useCallback(async () =>{
+        setError(null);
+        try{
+            await dispatch(profileActions.fetchProfile());
+        }
+        catch(err){
+            setError(err.message);
+        }
+    },[dispatch,setIsLoading, setError]);
+
+    useEffect(() => {
+        setIsLoading(true);
+        loadProfile().then(() => {
+            setIsLoading(false);
+        });
+    }, [dispatch, loadProfile]);
+
+    if (error) {
+        return (
+            <View style={styles.centered}>
+                <Text>An error occurred!</Text>
+                <Button
+                    title="Try again"
+                    onPress={loadProfile}
+                    color={Colors.primary}
+                />
+            </View>
+        );
+    }
+
+    if (isLoading) {
+        return (
+            <View style={styles.centered}>
+                <ActivityIndicator size="large" color={Colors.primary} />
+            </View>
+        );
+    }
+
+
     return(
         <View style = {styles.screen} >
-            <View style = {styles.prompt}>
-                <Text> Welcome, USER! </Text>
-                <Text> Mark your attendance here! </Text>
-            </View>
-            <View style = {styles.buttonContainer}>
-                <View style = {styles.buttons}>
+                <Text style = {{fontSize : 25, fontWeight : 'bold',marginBottom : 200,marginTop: 30}}> Welcome, {firstName}! </Text>
+                <Card style = {styles.cardStyle}>
                     <Button
                         title = "Mark Attendance"
-                        onPress= {
-                            () => {
-                                props.navigation.navigate({routeName: 'Mark' })
-                            }
-                        }
+                        onPress= {() => {props.navigation.navigate('Mark' )}}
+                        color = {Colors.primary}
                     />
-                </View>
-                <View style = {styles.buttons}>
                     <Button
                         title = "Apply for Leave"
-                        onPress= {
-                            () => {
-                                props.navigation.navigate({routeName: 'Leave' })
-                            }
-                        }
+                        onPress= {() => {props.navigation.navigate('Leave')}}
+                        color = {Colors.primary}
                     />
-                </View>
-            </View>
-            <View style = {styles.prompt2}>
-                <Text> Show Status for "Current Date"</Text>
-            </View>
-            <View style = {styles.buttonContainer}>
-                <View style = {styles.buttons}>
                     <Button
-                        title = "Show Status"
-                        onPress= {
-                            () => {
-                                props.navigation.navigate({routeName: 'Leave' })
-                            }
-                        }
+                        title = "Colleague Leave Status"
+                        onPress= {() => {props.navigation.navigate('Status' )}}
+                        color = {Colors.primary}
                     />
-                </View>
-            </View>
+                </Card>
         </View>
 
     )
@@ -72,7 +100,6 @@ AttendanceScreen.navigationOptions = navData => {
 const styles = StyleSheet.create({
     screen: {
         flex: 1,
-        justifyContent: 'center',
         alignItems: 'center'
     },
     prompt: {
@@ -81,24 +108,11 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         marginTop: 30,
     },
-    prompt2: {
-        flex: 2,
-        alignItems: 'center',
+    cardStyle : {
+        width : '70%',
+        height : '20%',
         justifyContent: 'center',
-        fontSize: 40,
-        borderColor: 'black',
-    },
-
-    menuButton: {
-        padding: 2,
-    },
-    buttonContainer: {
-        flex: 3,
-        width: '70%',
-        height: 10,
-    },
-    buttons: {
-        margin: 10,
+        alignItems: 'center',
     },
 });
 

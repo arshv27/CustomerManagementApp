@@ -18,7 +18,6 @@ const ProfileScreen = props => {
   const employeeID = useSelector(state => state.profile.employeeID);
   const tripCount = useSelector(state => state.profile.tripCount);
 
-  console.log(firstName + " Broseph");
 
   const dispatch = useDispatch();
 
@@ -26,7 +25,6 @@ const ProfileScreen = props => {
     setError(null);
     setIsRefreshing(true);
     try{
-        console.log("AAAAH");
         await dispatch(profileActions.fetchProfile());
     }
     catch(err){
@@ -48,7 +46,6 @@ const ProfileScreen = props => {
 
   useEffect(() => {
     setIsLoading(true);
-    console.log("yoOO");
     loadProfile().then(() => {
       setIsLoading(false);
     });
