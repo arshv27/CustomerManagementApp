@@ -32,6 +32,7 @@ const styles = StyleSheet.create({
     marginTop: 40,
     borderRadius: 5,
     justifyContent: 'center',
+    marginBottom: 50,
   },
   seperator: {
     height: 0.5,
