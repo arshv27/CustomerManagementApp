@@ -3,6 +3,8 @@ import { StyleSheet, Text, View, Button } from 'react-native';
 import Colors from "../constants/Colors";
 
 const DutyScreen = props => {
+
+
   return(
     <View style = {styles.screen} >
       <Text> It's time we tracked you!</Text>

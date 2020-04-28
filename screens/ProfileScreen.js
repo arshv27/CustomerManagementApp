@@ -4,6 +4,8 @@ import Colors from "../constants/Colors";
 
 import { useSelector, useDispatch } from 'react-redux';
 import * as profileActions from '../store/actions/profile';
+import Card from "../components/UI/Card";
+import {LinearGradient} from "expo-linear-gradient";
 
 const ProfileScreen = props => {
 
@@ -86,13 +88,19 @@ const ProfileScreen = props => {
 
   return(
       <View style = {styles.screen}>
-        <Text> First Name : {firstName} </Text>
-        <Text> Last Name : {lastName} </Text>
-        <Text> Employee ID : {employeeID} </Text>
-        <Text> Trip Count : {tripCount} </Text>
-          <Button title = "Edit Profile"
-                  onPress = {() => props.navigation.navigate('SetupProfile')}
-           />
+          <LinearGradient colors={['#ffedff', '#ffe3ff']} style={styles.gradient}>
+              <Card style = {styles.cardStyle}>
+              <Text style = {styles.txtstyle}> First Name : {firstName} </Text>
+              <Text style = {styles.txtstyle}> Last Name : {lastName} </Text>
+              <Text style = {styles.txtstyle}> Employee ID : {employeeID} </Text>
+              <Text style = {styles.txtstyle}> Trip Count : {tripCount} </Text>
+              <Button title = "Edit Profile"
+                      onPress = {() => props.navigation.navigate('SetupProfile')}
+                      color = {Colors.primary}
+              />
+              </Card>
+
+          </LinearGradient>
       </View>
   )
 };
@@ -116,10 +124,21 @@ ProfileScreen.navigationOptions = navData => {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingBottom : 30
-  }
+  },
+  txtstyle : {
+      fontSize: 20,
+      paddingVertical: 15
+  },
+  cardStyle : {
+      width : '80%',
+      justifyContent: 'center',
+      alignItems: 'center',
+  },
+    gradient: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
 });
 
 export default ProfileScreen;

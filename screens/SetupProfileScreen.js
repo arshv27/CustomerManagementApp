@@ -46,16 +46,16 @@ const SetupProfileScreen =  props => {
 
     const [formState, dispatchFormState] = useReducer(formReducer, {
         inputValues: {
-            firstName: old_firstName,
-            lastName: old_lastName,
-            employeeID: old_employeeID
+            firstName: old_firstName == null ? "" : old_firstName,
+            lastName: old_lastName == null ? "" : old_lastName,
+            employeeID: old_employeeID == null ? "" : old_employeeID
         },
         inputValidities: {
             firstName: old_firstName != null,
             lastName: old_lastName != null,
             employeeID: old_employeeID != null
         },
-        formIsValid: false
+        formIsValid: old_firstName ? true : false
     });
 
     useEffect(() => {
@@ -64,8 +64,12 @@ const SetupProfileScreen =  props => {
         }
     }, [error]);
 
+
+
     const submitHandler = useCallback(async() => {
         if (!formState.formIsValid) {
+            console.log("ARGGH" + " " + formState.formIsValid);
+            // inputChangeHandler();
             Alert.alert('Wrong input!', 'Please check the errors in the form.', [
                 { text: 'Okay' }
             ]);
@@ -76,6 +80,7 @@ const SetupProfileScreen =  props => {
 
         try {
             if(old_firstName == null){
+                console.log(111);
                 await dispatch(
                     profileActions.createProfile(
                         formState.inputValues.firstName,
@@ -102,7 +107,6 @@ const SetupProfileScreen =  props => {
         setIsLoading(false);
     }, [dispatch, old_firstName, formState]);
 
-
     const inputChangeHandler = useCallback(
         (inputIdentifier, inputValue, inputValidity) => {
             dispatchFormState({
@@ -114,6 +118,7 @@ const SetupProfileScreen =  props => {
         },
         [dispatchFormState]
     );
+
 
     if(isLoading){
         return (
@@ -137,11 +142,10 @@ const SetupProfileScreen =  props => {
                             errorText="Please enter a valid first name!"
                             keyboardType="default"
                             autoCapitalize="sentences"
-                            autoCorrect
                             returnKeyType="next"
                             onInputChange={inputChangeHandler}
                             initialValue= {old_firstName != null ? old_firstName : ""}
-                            initiallyValid= {false}
+                            initiallyValid= {old_firstName != null}
                             required
                         />
                         <Input
@@ -152,7 +156,7 @@ const SetupProfileScreen =  props => {
                             returnKeyType="next"
                             onInputChange={inputChangeHandler}
                             initialValue= {old_lastName != null ? old_lastName : ""}
-                            initiallyValid={false}
+                            initiallyValid={old_firstName != null}
                             required
                         />
                         <Input
@@ -163,12 +167,14 @@ const SetupProfileScreen =  props => {
                             returnKeyType="next"
                             onInputChange={inputChangeHandler}
                             initialValue={old_employeeID != null ? old_employeeID : ""}
-                            initiallyValid={false}
+                            initiallyValid={old_firstName != null}
                             required
                         />
                     </View>
                 </ScrollView>
-                <Button title = "Save" onPress = {submitHandler}/>
+                <Button title = "Save" onPress = {submitHandler}
+                        color = {Colors.primary}
+                />
             </KeyboardAvoidingView>
     );
 };
@@ -180,12 +186,7 @@ SetupProfileScreen.navigationOptions = navData => {
           backgroundColor: Platform.OS === 'android' ? Colors.primary : ''
       },
       headerTintColor: Platform.OS === 'android' ? 'white' : Colors.primary,
-      headerRight : () => (
-          <Button title = "Skip"
-                  color = {Colors.primary}
-                  onPress = {() => navData.navigation.goBack()}
-          />
-      )
+
   }
 };
 
@@ -195,10 +196,10 @@ screen: {
     flex: 1,
     flexDirection : 'column',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
 },
 form : {
-    margin : 20
+    margin : 20,
 }
 });
 
