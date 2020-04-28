@@ -1,10 +1,11 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import { StyleSheet, Text, View, Button, FlatList } from 'react-native';
 import Colors from "../constants/Colors";
 
 const HomeScreen = props => {
   return(
     <View style = {styles.screen} >
+        <FlatList />
       <Text> The Home Page! </Text>
     </View>
   )
