@@ -6,7 +6,8 @@ const MarkScreen = props => {
     return(
         <View style = {styles.screen} >
             <Button title = "Check in"
-                onPress = {() => {alert("Attendance marked successfully")}}
+                    onPress = {() => {alert("Attendance marked successfully")}}
+                    color = {Colors.primary}
             />
             <Text> You are 539 metres away from office! </Text>
         </View>

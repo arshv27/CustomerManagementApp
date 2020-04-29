@@ -1,17 +1,19 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet } from "react-native";
-import {Button} from "react-native-web";
+import { View, Text, Image, StyleSheet, Button } from "react-native";
+import Colors from "../../constants/Colors";
+
 
 const ProductItem = props => {
     return (
         <View style = {styles.product} >
-            <View style = {{ width: '100%', paddingLeft: 15,}}>
+            <View style = {{ width: '100%', paddingLeft: 15, paddingTop : 10}}>
                 <Image source={ require('../../data/images/Precimould.png')} style = {styles.image} />
                 <Text style = {styles.title} >Product: {props.title}</Text>
                 <Text style = {styles.price} >Base Price: Rs.{props.base_price.toFixed(2)}</Text>
-                {/*<View style = { styles.actions }>*/}
-                {/*    <Button title= "View Details"  onPress={props.onViewDetail} />*/}
-                {/*</View>*/}
+                <Button title = "View Details"
+                        onPress = {() => alert("To be added soon!")}
+                        color = {Colors.primary}
+                />
             </View>
         </View>
     );
@@ -26,7 +28,7 @@ const styles = StyleSheet.create({
         elevation: 5,
         borderRadius: 10,
         backgroundColor: 'white',
-        height: 300,
+        height: 275,
         margin: 20,
         flexDirection: 'row',
         flex: 1,

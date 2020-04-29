@@ -9,7 +9,7 @@ const HomeScreen = props => {
     return(
         <View style = {styles.screen} >
             <View style = {styles.title}>
-                <Text>LIST OF PRODUCTS</Text>
+                <Text style = {{fontSize : 20}}>LIST OF PRODUCTS</Text>
             </View>
 
             <FlatList
@@ -54,6 +54,7 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       alignItems: 'center',
       width: '100%',
+      paddingLeft : 30
   },
 
   title: {

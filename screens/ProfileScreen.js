@@ -74,10 +74,11 @@ const ProfileScreen = props => {
 
   if(!isLoading && firstName == null){
     return(
-        <View style = {styles.screen} >
+        <View style = {styles.myStyle} >
           <Text> You are yet to add Profile information! </Text>
           <Button title = "Setup Profile"
                   onPress = {() => props.navigation.navigate('SetupProfile')}
+                  color = {Colors.primary}
           />
         </View>
     )
@@ -121,6 +122,11 @@ ProfileScreen.navigationOptions = navData => {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
+  },
+  myStyle: {
+   flex : 1,
+   justifyContent : 'center',
+   alignItems : 'center'
   },
   txtstyle : {
       fontSize: 20,
