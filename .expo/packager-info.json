@@ -2,8 +2,8 @@
   "devToolsPort": 19003,
   "expoServerPort": 19000,
   "packagerPort": 19001,
-  "packagerPid": 11340,
-  "expoServerNgrokUrl": null,
-  "packagerNgrokUrl": null,
-  "ngrokPid": null
+  "packagerPid": 18708,
+  "expoServerNgrokUrl": "https://mb-7ch.anonymous.customermanagementapp.exp.direct",
+  "packagerNgrokUrl": "https://packager.mb-7ch.anonymous.customermanagementapp.exp.direct",
+  "ngrokPid": 3952
 }
