@@ -1,12 +1,34 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import { StyleSheet, Text, View, Button, FlatList } from 'react-native';
 import Colors from "../constants/Colors";
+import { useSelector } from "react-redux";
+import ProductItem from "../components/Items/ProductItem";
 
 const HomeScreen = props => {
-  return(
-    <View style = {styles.screen} >
-      <Text> The Home Page! </Text>
-    </View>
+    const productsList = useSelector(state => state.products.availableProducts);
+    return(
+        <View style = {styles.screen} >
+            <View style = {styles.title}>
+                <Text>LIST OF PRODUCTS</Text>
+            </View>
+
+            <FlatList
+                data = { productsList }
+                keyExtractor = { item  => item.id }
+                renderItem = {
+                    itemData => (
+                        <ProductItem
+                            image = {itemData.item.imageAdd}
+                            title = { itemData.item.title}
+                            base_price = { itemData.item.base_price}
+                            onViewDetail = {
+                                () => {}
+                            }
+                        />
+                    )
+                }
+            />
+        </View>
   )
 };
 
@@ -28,9 +50,14 @@ HomeScreen.navigationOptions = navData => {
 
 const styles = StyleSheet.create({
   screen: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      width: '100%',
+  },
+
+  title: {
+      margin: 20,
   }
 });
 
