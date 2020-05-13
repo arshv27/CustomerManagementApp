@@ -1,9 +1,25 @@
 import React, { Component } from "react";
-import { StyleSheet, View } from "react-native";
+// import { StyleSheet, View } from "react-native";
+import {
+  View,
+  Image,
+  TouchableOpacity,
+  AsyncStorage,
+  ScrollView,
+  Text,
+  Dimensions,
+  Button, ActivityIndicator,
+  TextInput,
+  Switch,
+  StyleSheet,
+  Alert,
+  Platform,
+} from 'react-native';
 import MapView from "react-native-maps";
 import * as Location from "expo-location";
 import * as Permissions from "expo-permissions";
 import * as TaskManager from "expo-task-manager";
+import Colors from "../constants/Colors";
 
 const LOCATION_TASK_NAME = "background-location-task";
 
@@ -109,7 +125,7 @@ const styles = StyleSheet.create({
   }
 });
 
-Location.navigationOptions = navData => {
+location.navigationOptions = navData => {
   return {
     headerTitle : 'Location',
     headerStyle: {

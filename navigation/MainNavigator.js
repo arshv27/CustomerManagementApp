@@ -80,8 +80,8 @@ const MainDrawerNavigator = createDrawerNavigator(
             Location : {
                 screen: LocationStack,
                 navigationOptions:{
-                drawerLabel: 'Location'
-              }
+                    drawerLabel: 'Location'
+                }
             },
             Profile : {
               screen: ProfileStack,
