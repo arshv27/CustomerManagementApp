@@ -15,6 +15,7 @@ import StartupScreen from "../screens/StartupScreen";
 import SetupProfileScreen from "../screens/SetupProfileScreen";
 import MapScreen from "../screens/MapScreen";
 import Home from '../screens/Home';
+import location from '../screens/location';
 
 import CreateTask from '../screens/CreateTask';
 
@@ -28,6 +29,13 @@ const defaultNavOptions = {
     },
     headerTintColor: Platform.OS === 'android' ? 'white' : Colors.primary
 };
+
+const LocationStack = createStackNavigator(
+    {Location : location},
+    {
+       defaultNavigationOptions: defaultNavOptions 
+    }
+);
 
 const HomeStack = createStackNavigator(
     {Home : HomeScreen},
@@ -67,6 +75,12 @@ const MainDrawerNavigator = createDrawerNavigator(
               screen: HomeStack,
               navigationOptions:{
                 drawerLabel: 'Home '
+              }
+            },
+            Location : {
+                screen: LocationStack,
+                navigationOptions:{
+                drawerLabel: 'Location'
               }
             },
             Profile : {
