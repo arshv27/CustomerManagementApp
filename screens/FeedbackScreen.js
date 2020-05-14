@@ -37,7 +37,7 @@ const FeedbackScreen = props => {
                     </View>
 
                     <Button title = {"Submit Feedback"}
-                            onPress = {() => {alert("Under construction!")}}
+                            onPress = {() => {alert("Thank you!")}}
                             color = {Colors.primary}
                     />
                 </Card>
