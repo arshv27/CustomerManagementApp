@@ -16,6 +16,7 @@ import SetupProfileScreen from "../screens/SetupProfileScreen";
 import MapScreen from "../screens/MapScreen";
 import Home from '../screens/Home';
 import location from '../screens/location';
+import FeedbackScreen from "../screens/FeedbackScreen";
 
 import CreateTask from '../screens/CreateTask';
 
@@ -68,6 +69,13 @@ const CalendarStack = createStackNavigator(
   }
 );
 
+const FeedbackStack = createStackNavigator(
+    {Feedback : FeedbackScreen},
+    {
+        defaultNavigationOptions: defaultNavOptions
+    }
+);
+
 
 const MainDrawerNavigator = createDrawerNavigator(
     {
@@ -107,6 +115,12 @@ const MainDrawerNavigator = createDrawerNavigator(
                     drawerLabel: 'Calendar '
                 }
             },
+            Feedback : {
+                screen: FeedbackStack,
+                navigationOptions:{
+                    drawerLabel: 'Feedback '
+                }
+        },
 
         },
     {
