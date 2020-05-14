@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
 
 import Colors from "../constants/Colors";
@@ -8,7 +8,8 @@ import SliderRating from "../components/UI/SliderRating";
 import ServicePicker from "../components/UI/ServicePicker";
 
 const FeedbackScreen = props => {
-
+    const [name, setName] = useState("");
+    const [comments, setComments] = useState("");
 
     return(
         <View style = {styles.screen} >
@@ -17,6 +18,8 @@ const FeedbackScreen = props => {
                     <TextInput
                         placeholder= "Employee Name"
                         style={styles.textInput}
+                        value={name}
+                        onChangeText={name => setName(name)}
                     />
                     <View style={styles.sliderStyle}>
                         <ServicePicker />
@@ -26,12 +29,12 @@ const FeedbackScreen = props => {
                         style={styles.textInput}
                         multiline={true}
                         numberOfLines={5}
+                        value={comments}
+                        onChangeText={comments => setComments(comments)}
                     />
                     <View style={styles.sliderStyle}>
                         <SliderRating />
                     </View>
-
-
 
                     <Button title = {"Submit Feedback"}
                             onPress = {() => {alert("Under construction!")}}
