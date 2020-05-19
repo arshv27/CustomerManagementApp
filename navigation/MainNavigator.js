@@ -1,9 +1,9 @@
 import React from 'react';
-import { Platform, SafeAreaView, Button, View} from 'react-native'
-import {createAppContainer,createSwitchNavigator} from 'react-navigation'
+import {Platform, SafeAreaView, Button, View, TouchableOpacity} from 'react-native'
+import {createAppContainer, createSwitchNavigator} from 'react-navigation'
 import {createStackNavigator} from 'react-navigation-stack'
-import {createDrawerNavigator,DrawerNavigatorItems} from 'react-navigation-drawer'
-import { useDispatch } from 'react-redux';
+import {createDrawerNavigator, DrawerNavigatorItems} from 'react-navigation-drawer'
+import {useDispatch} from 'react-redux';
 
 import * as Permissions from 'expo-permissions';
 
@@ -15,60 +15,86 @@ import StartupScreen from "../screens/StartupScreen";
 import SetupProfileScreen from "../screens/SetupProfileScreen";
 import MapScreen from "../screens/MapScreen";
 import Home from '../screens/Home';
-import location from '../screens/location';
-import FeedbackScreen from "../screens/FeedbackScreen";
 
 import CreateTask from '../screens/CreateTask';
 
 import * as authActions from '../store/actions/auth';
 import Colors from "../constants/Colors";
-import AttendanceNavigator from "./Attendance/AttendanceNavigator";
+import ProductDetailsScreen from "../screens/ProductDetailsScreen";
+import DataLoadingScreen from "../screens/DataLoadingScreen";
+import {Ionicons} from "@expo/vector-icons";
+import AttendanceScreen from "../screens/Attendance/AttendanceScreen";
+import LeaveScreen from "../screens/Attendance/Leave";
+import StatusScreen from "../screens/Attendance/Status";
+import FeedbackScreen from "../screens/FeedbackScreen";
 
-const defaultNavOptions = {
+export const defaultNavOptions = {
     headerStyle: {
         backgroundColor: Platform.OS === 'android' ? Colors.primary : ''
     },
-    headerTintColor: Platform.OS === 'android' ? 'white' : Colors.primary
+    headerTintColor: Platform.OS === 'android' ? 'white' : Colors.primary,
 };
 
-const LocationStack = createStackNavigator(
-    {Location : location},
-    {
-       defaultNavigationOptions: defaultNavOptions 
+export const drawerMenu = navData => {
+    return {
+        headerLeft: () => (
+            <TouchableOpacity onPress={() => navData.navigation.toggleDrawer()}>
+                <Ionicons
+                    name={Platform.OS === 'ios' ? 'ios-menu' : 'md-menu'}
+                    size={30}
+                    color={Platform.OS === 'android' ? 'white' : Colors.primary}
+                    style={{marginLeft: 15}}
+                />
+            </TouchableOpacity>
+        ),
     }
-);
+};
 
 const HomeStack = createStackNavigator(
-    {Home : HomeScreen},
+    {
+        DataLoading: DataLoadingScreen,
+        Home: {
+            screen: HomeScreen,
+            navigationOptions: navData => drawerMenu(navData)
+        },
+        ProductDetails: ProductDetailsScreen,
+        Profile: ProfileScreen,
+        SetupProfile: SetupProfileScreen
+    },
+    {
+        defaultNavigationOptions: {
+            ...defaultNavOptions,
+            headerMode: 'screen'
+        }
+    }
+)
+;
+
+const DutyStack = createStackNavigator(
+    {
+        Duty: {
+            screen: DutyScreen,
+            navigationOptions: navData => drawerMenu(navData)
+        },
+        Map: MapScreen
+    },
     {
         defaultNavigationOptions: defaultNavOptions
     }
 );
 
-const ProfileStack = createStackNavigator(
-    {Profile : ProfileScreen,
-                   SetupProfile : SetupProfileScreen
-    },
-    {navigationOptions : defaultNavOptions}
-);
-
-const DutyStack = createStackNavigator(
-    {Duty : DutyScreen,
-                    Map : MapScreen
-    },
-    {navigationOptions : defaultNavOptions}
-);
-
 const CalendarStack = createStackNavigator(
-  {
-    Home: Home,
-    CreateTask: CreateTask,
-  },
-  {
-    navigationOptions : defaultNavOptions,
-  }
+    {
+        Home: {
+            screen: Home,
+            navigationOptions: navData => drawerMenu(navData)
+        },
+        CreateTask: CreateTask,
+    },
+    {
+        defaultNavigationOptions: defaultNavOptions
+    }
 );
-
 const FeedbackStack = createStackNavigator(
     {Feedback : FeedbackScreen},
     {
@@ -76,64 +102,65 @@ const FeedbackStack = createStackNavigator(
     }
 );
 
+const AttendanceNavigator = createStackNavigator({
+    Attendance: {
+        screen: AttendanceScreen,
+        navigationOptions: navData => drawerMenu(navData)
+    },
+    Leave: LeaveScreen,
+    Status: StatusScreen,
+}, {
+    defaultNavigationOptions: defaultNavOptions
+});
+
 
 const MainDrawerNavigator = createDrawerNavigator(
     {
-            Home : {
-              screen: HomeStack,
-              navigationOptions:{
+        Home: {
+            screen: HomeStack,
+            navigationOptions: {
                 drawerLabel: 'Home '
-              }
-            },
-            Location : {
-                screen: LocationStack,
-                navigationOptions:{
-                    drawerLabel: 'Location'
-                }
-            },
-            Profile : {
-              screen: ProfileStack,
-              navigationOptions:{
-                drawerLabel: 'Profile '
-              }
-            },
-            Attendance : {
-                screen: AttendanceNavigator,
-                navigationOptions:{
-                    drawerLabel: 'Attendance '
-                }
-            },
-            Duty : {
-                screen: DutyStack,
-                navigationOptions:{
-                    drawerLabel: 'Duty Mode'
-                }
-            },
-            Calendar : {
-                screen: CalendarStack,
-                navigationOptions:{
-                    drawerLabel: 'Calendar '
-                }
-            },
-            Feedback : {
-                screen: FeedbackStack,
-                navigationOptions:{
-                    drawerLabel: 'Feedback '
-                }
+            }
+        },
+        Attendance: {
+            screen: AttendanceNavigator,
+            navigationOptions: {
+                drawerLabel: 'Attendance  '
+            }
+        },
+        Duty: {
+            screen: DutyStack,
+            navigationOptions: {
+                drawerLabel: 'Duty Mode'
+            }
+        },
+        Calendar: {
+            screen: CalendarStack,
+            navigationOptions: {
+                drawerLabel: 'Calendar  '
+            }
+        },
+        Feedback : {
+            screen: FeedbackStack,
+            navigationOptions: {
+                drawerLabel: 'Feedback  '
+            }
         },
 
-        },
+    },
     {
         contentOptions: {
             activeTintColor: Colors.primary
         },
+        initialRouteName: 'Home',
         contentComponent: props => {
             const dispatch = useDispatch();
+
             return (
-                <View style={{ flex: 1, paddingTop: 20 }}>
-                    <SafeAreaView forceInset={{ top: 'always', horizontal: 'never' }}>
+                <View style={{flex: 1, paddingTop: 20}}>
+                    <SafeAreaView forceInset={{top: 'always', horizontal: 'never'}}>
                         <DrawerNavigatorItems {...props} />
-                        <View style = {{
+                        <View style={{
                             alignItems: 'center',
                         }}>
                             <Button
@@ -150,19 +177,22 @@ const MainDrawerNavigator = createDrawerNavigator(
             );
         }
     }
-    );
+);
 
 const AuthNavigator = createStackNavigator(
     {
-        Auth : LoginScreen
+        Auth: LoginScreen
     },
-    {defaultNavigationOptions : defaultNavOptions}
+    {
+        defaultNavigationOptions: defaultNavOptions
+    }
 );
 
 const MainNavigator = createSwitchNavigator({
-    Startup : StartupScreen,
-    Auth : AuthNavigator,
-    MainApp : MainDrawerNavigator
+    Startup: StartupScreen,
+    Auth: AuthNavigator,
+    MainApp: MainDrawerNavigator
 });
 
-export default  createAppContainer(MainNavigator);
+
+export default createAppContainer(MainNavigator);

@@ -1,70 +1,77 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {StyleSheet, Text, View, Button, ActivityIndicator} from 'react-native';
+import {StyleSheet, Text, View, Button, Alert, TouchableOpacity} from 'react-native';
 
 import Card from "../../components/UI/Card";
 import Colors from "../../constants/Colors";
 import * as profileActions from "../../store/actions/profile";
 import {useDispatch, useSelector} from "react-redux";
 import {LinearGradient} from "expo-linear-gradient";
+import * as Location from "expo-location";
+import {getCurrentPosition, withinRange, getOfficeCoords} from "../../utilityFunctions";
+
 
 const AttendanceScreen = props => {
-
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState(null);
-
-    const dispatch = useDispatch();
-
     const firstName = useSelector(state => state.profile.firstName);
-
-    const loadProfile = useCallback(async () =>{
-        setError(null);
-        try{
-            await dispatch(profileActions.fetchProfile());
-        }
-        catch(err){
-            setError(err.message);
-        }
-    },[dispatch,setIsLoading, setError]);
-
-    useEffect(() => {
-        setIsLoading(true);
-        loadProfile().then(() => {
-            setIsLoading(false);
-        });
-    }, [dispatch, loadProfile]);
-
-    if (error) {
-        return (
-            <View style={styles.centered}>
-                <Text>An error occurred!</Text>
-                <Button
-                    title="Try again"
-                    onPress={loadProfile}
-                    color={Colors.primary}
-                />
-            </View>
-        );
-    }
-
-    if (isLoading) {
-        return (
-            <View style={styles.centered}>
-                <ActivityIndicator size="large" color={Colors.primary} />
-            </View>
-        );
-    }
-
+    const [attendanceModalVisibility, setAttendanceModalVisibility] = useState(false);
+    const [status, setStatus] = useState(null);
+    const [workType, setWorkType] = useState(null);
+    const [location, setLocation] = useState(null);
 
     return(
         <View style = {styles.screen} >
             <LinearGradient colors={['#ffedff', '#ffe3ff']} style={styles.gradient}>
                 <Text style = {{fontSize : 25, fontWeight : 'bold',marginBottom : 125,marginTop: 50}}> Welcome, {firstName}! </Text>
                 <Card style = {styles.cardStyle}>
-                    <Button
-                        title = "Mark Attendance"
-                        onPress= {() => {props.navigation.navigate('Mark' )}}
-                        color = {Colors.primary}
-                    />
+                    <TouchableOpacity
+                        onPress= {() => Alert.alert((new Date()).toDateString(), 'Attendance Status', [
+                            {
+                                text: 'Present',
+                                onPress: () => {
+                                    setAttendanceModalVisibility(true);
+                                    setStatus('Present');
+                                    Alert.alert('Present', 'Work Details', [
+                                        {
+                                            text: 'Office',
+                                            onPress: async () => {
+                                                const office = await getOfficeCoords('Eros Woodbury Tower');
+                                                const user = await getCurrentPosition();
+                                                if (withinRange(office, user, 0.05)) {
+                                                    setWorkType('Office');
+                                                    alert('Attendance Marked!')
+                                                }
+                                                else alert('You are not within 50 meters of the Office!')
+                                            }
+                                        },
+                                        {
+                                            text: 'Outside Duty',
+                                            onPress: async () => {
+                                                setWorkType('Outside');
+                                                setLocation(await getCurrentPosition());
+                                                alert('Attendance Marked!')
+                                            }
+                                        },
+                                        {
+                                            text: 'Work From Home',
+                                            onPress: async () => {
+                                                setWorkType('Home');
+                                                setLocation(await getCurrentPosition());
+                                                alert('Attendance Marked!')
+                                            }
+                                        }
+                                    ])
+                                }
+                            },
+                            {
+                                text: 'On leave',
+                                onPress: () => {
+                                    setStatus('Leave');
+                                    alert('Enjoy your leave!')
+                                }
+                            }
+                        ])}
+                    >
+                        <Text color = {Colors.primary}>Mark Attendance</Text>
+                    </TouchableOpacity>
                     <Button
                         title = "Apply for Leave"
                         onPress= {() => {props.navigation.navigate('Leave')}}
@@ -85,18 +92,6 @@ const AttendanceScreen = props => {
 AttendanceScreen.navigationOptions = navData => {
     return {
         headerTitle : 'Attendance',
-        headerStyle: {
-            backgroundColor: Platform.OS === 'android' ? Colors.primary : ''
-        },
-        headerTintColor: Platform.OS === 'android' ? 'white' : Colors.primary,
-        headerLeft : () => (
-            <View style = {styles.menuButton}>
-                <Button title = "Menu"
-                        color = {Colors.primary}
-                        onPress = {() => navData.navigation.toggleDrawer()}
-                />
-            </View>
-        ),
     }
 };
 

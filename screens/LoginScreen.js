@@ -6,7 +6,7 @@ import {
     StyleSheet,
     Button,
     ActivityIndicator,
-    Alert
+    Alert, Platform
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useDispatch } from 'react-redux';
@@ -103,7 +103,7 @@ const AuthScreen = props => {
 
     return (
         <KeyboardAvoidingView
-            behavior="padding"
+            behavior="height"
             keyboardVerticalOffset={50}
             style={styles.screen}
         >
@@ -161,7 +161,11 @@ const AuthScreen = props => {
 };
 
 AuthScreen.navigationOptions = {
-    headerTitle: 'Authenticate'
+    headerTitle: 'Authenticate',
+    headerStyle: {
+        backgroundColor: Platform.OS === 'android' ? Colors.primary : ''
+    },
+    headerTintColor: Platform.OS === 'android' ? 'white' : Colors.primary
 };
 
 const styles = StyleSheet.create({

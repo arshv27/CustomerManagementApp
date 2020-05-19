@@ -6,15 +6,13 @@ import Colors from "../../constants/Colors";
 const ProductItem = props => {
     return (
         <View style = {styles.product} >
-            <View style = {{ width: '100%', paddingLeft: 15, paddingTop : 10}}>
-                <Image source={ require('../../data/images/Precimould.png')} style = {styles.image} />
+                <Image source={props.image} style = {styles.image} resizeMode={'contain'} />
                 <Text style = {styles.title} >Product: {props.title}</Text>
                 <Text style = {styles.price} >Base Price: Rs.{props.base_price.toFixed(2)}</Text>
                 <Button title = "View Details"
-                        onPress = {() => alert("To be added soon!")}
+                        onPress = {props.onViewDetail}
                         color = {Colors.primary}
                 />
-            </View>
         </View>
     );
 };
@@ -28,12 +26,12 @@ const styles = StyleSheet.create({
         elevation: 5,
         borderRadius: 10,
         backgroundColor: 'white',
-        height: 275,
-        margin: 20,
-        flexDirection: 'row',
-        flex: 1,
-        width: '80%',
-        alignItems: 'flex-start',
+        height: 300,
+        margin: 5,
+        flexDirection: 'column',
+        flex: 1/2,
+        alignItems: 'center',
+        justifyContent: 'space-evenly'
     },
 
     image: {

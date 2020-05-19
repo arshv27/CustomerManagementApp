@@ -28,8 +28,8 @@ export const fetchProfile = () => {
                       firebase_id : key
                   }
               });
-              console.log(key);
           }
+          return getState().profile
       }
       catch(err){
 

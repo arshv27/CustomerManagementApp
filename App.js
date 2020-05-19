@@ -28,10 +28,15 @@ export default class App extends Component {
   async componentWillMount() {
     await this._askForCalendarPermissions();
     await this._askForReminderPermissions();
+    await this._askForLocationPermissions();
   }
 
   _askForCalendarPermissions = async () => {
     await Permissions.askAsync(Permissions.CALENDAR);
+  };
+
+  _askForLocationPermissions = async () => {
+    await Permissions.askAsync(Permissions.LOCATION);
   };
 
   _askForReminderPermissions = async () => {

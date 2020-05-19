@@ -1,18 +1,17 @@
-import React, { Component, useState, useEffect, useCallback } from 'react';
+import React, {Component} from 'react';
 import {
-  View,
-  Image,
-  TouchableOpacity,
-  AsyncStorage,
-  ScrollView,
-  Text,
-  Dimensions,
-  Button, ActivityIndicator,
-  TextInput,
-  Switch,
-  StyleSheet,
   Alert,
+  AsyncStorage,
+  Dimensions,
+  Image,
   Platform,
+  ScrollView,
+  StyleSheet,
+  Switch,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import moment from 'moment';
 import * as Calendar from 'expo-calendar';
@@ -21,13 +20,130 @@ import Constants from 'expo-constants';
 
 import CalendarStrip from 'react-native-calendar-strip';
 import DateTimePicker from 'react-native-modal-datetime-picker';
-import { Context } from '../data/Context';
-import { Task } from '../components/Task';
+import {Context} from '../data/Context';
+import {Task} from '../components/Task';
 
-import Colors from "../constants/Colors";
-
-import { useSelector, useDispatch } from 'react-redux';
-import * as profileActions from '../store/actions/profile';
+const styles = StyleSheet.create({
+  taskListContent: {
+    height: 100,
+    width: 327,
+    alignSelf: 'center',
+    borderRadius: 10,
+    shadowColor: '#2E66E7',
+    backgroundColor: '#ffffff',
+    marginTop: 10,
+    marginBottom: 10,
+    shadowOffset: {
+      width: 3,
+      height: 3,
+    },
+    shadowRadius: 5,
+    shadowOpacity: 0.2,
+    elevation: 3,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  viewTask: {
+    position: 'absolute',
+    bottom: 40,
+    right: 17,
+    height: 60,
+    width: 60,
+    backgroundColor: '#2E66E7',
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#2E66E7',
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowRadius: 30,
+    shadowOpacity: 0.5,
+    elevation: 5,
+    zIndex: 999,
+  },
+  deleteButton: {
+    backgroundColor: '#ff6347',
+    width: 100,
+    height: 38,
+    alignSelf: 'center',
+    marginTop: 40,
+    borderRadius: 5,
+    justifyContent: 'center',
+  },
+  updateButton: {
+    backgroundColor: '#2E66E7',
+    width: 100,
+    height: 38,
+    alignSelf: 'center',
+    marginTop: 40,
+    borderRadius: 5,
+    justifyContent: 'center',
+    marginRight: 20,
+  },
+  sepeerator: {
+    height: 0.5,
+    width: '100%',
+    backgroundColor: '#979797',
+    alignSelf: 'center',
+    marginVertical: 20,
+  },
+  notesContent: {
+    height: 0.5,
+    width: '100%',
+    backgroundColor: '#979797',
+    alignSelf: 'center',
+    marginVertical: 20,
+  },
+  learn: {
+    height: 23,
+    width: 51,
+    backgroundColor: '#F8D557',
+    justifyContent: 'center',
+    borderRadius: 5,
+  },
+  design: {
+    height: 23,
+    width: 59,
+    backgroundColor: '#62CCFB',
+    justifyContent: 'center',
+    borderRadius: 5,
+    marginRight: 7,
+  },
+  readBook: {
+    height: 23,
+    width: 83,
+    backgroundColor: '#4CD565',
+    justifyContent: 'center',
+    borderRadius: 5,
+    marginRight: 7,
+  },
+  title: {
+    height: 25,
+    borderColor: '#5DD976',
+    borderLeftWidth: 1,
+    paddingLeft: 8,
+    fontSize: 19,
+  },
+  taskContainer: {
+    height: 475,
+    width: 327,
+    alignSelf: 'center',
+    borderRadius: 20,
+    shadowColor: '#2E66E7',
+    backgroundColor: '#ffffff',
+    shadowOffset: {
+      width: 3,
+      height: 3,
+    },
+    shadowRadius: 20,
+    shadowOpacity: 0.2,
+    elevation: 5,
+    padding: 22,
+  },
+});
 
 export default class Home extends Component {
   state = {
@@ -102,10 +218,7 @@ export default class Home extends Component {
         const todoList = JSON.parse(value);
         const markDot = todoList.map(item => item.markedDot);
         const todoLists = todoList.filter(item => {
-          if (currentDate === item.date) {
-            return true;
-          }
-          return false;
+          return currentDate === item.date;
         });
         if (todoLists.length !== 0) {
           this.setState({
@@ -134,11 +247,10 @@ export default class Home extends Component {
     const selectedDatePicked = prevSelectedTask.alarm.time;
     const hour = moment(date).hour();
     const minute = moment(date).minute();
-    const newModifiedDay = moment(selectedDatePicked)
-      .hour(hour)
-      .minute(minute);
+    prevSelectedTask.alarm.time = moment(selectedDatePicked)
+        .hour(hour)
+        .minute(minute);
 
-    prevSelectedTask.alarm.time = newModifiedDay;
     this.setState({
       selectedTask: prevSelectedTask,
     });
@@ -663,140 +775,8 @@ export default class Home extends Component {
   }
 }
 
-const styles = StyleSheet.create({
-  taskListContent: {
-    height: 100,
-    width: 327,
-    alignSelf: 'center',
-    borderRadius: 10,
-    shadowColor: '#2E66E7',
-    backgroundColor: '#ffffff',
-    marginTop: 10,
-    marginBottom: 10,
-    shadowOffset: {
-      width: 3,
-      height: 3,
-    },
-    shadowRadius: 5,
-    shadowOpacity: 0.2,
-    elevation: 3,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  viewTask: {
-    position: 'absolute',
-    bottom: 40,
-    right: 17,
-    height: 60,
-    width: 60,
-    backgroundColor: '#2E66E7',
-    borderRadius: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#2E66E7',
-    shadowOffset: {
-      width: 0,
-      height: 5,
-    },
-    shadowRadius: 30,
-    shadowOpacity: 0.5,
-    elevation: 5,
-    zIndex: 999,
-  },
-  deleteButton: {
-    backgroundColor: '#ff6347',
-    width: 100,
-    height: 38,
-    alignSelf: 'center',
-    marginTop: 40,
-    borderRadius: 5,
-    justifyContent: 'center',
-  },
-  updateButton: {
-    backgroundColor: '#2E66E7',
-    width: 100,
-    height: 38,
-    alignSelf: 'center',
-    marginTop: 40,
-    borderRadius: 5,
-    justifyContent: 'center',
-    marginRight: 20,
-  },
-  sepeerator: {
-    height: 0.5,
-    width: '100%',
-    backgroundColor: '#979797',
-    alignSelf: 'center',
-    marginVertical: 20,
-  },
-  notesContent: {
-    height: 0.5,
-    width: '100%',
-    backgroundColor: '#979797',
-    alignSelf: 'center',
-    marginVertical: 20,
-  },
-  learn: {
-    height: 23,
-    width: 51,
-    backgroundColor: '#F8D557',
-    justifyContent: 'center',
-    borderRadius: 5,
-  },
-  design: {
-    height: 23,
-    width: 59,
-    backgroundColor: '#62CCFB',
-    justifyContent: 'center',
-    borderRadius: 5,
-    marginRight: 7,
-  },
-  readBook: {
-    height: 23,
-    width: 83,
-    backgroundColor: '#4CD565',
-    justifyContent: 'center',
-    borderRadius: 5,
-    marginRight: 7,
-  },
-  title: {
-    height: 25,
-    borderColor: '#5DD976',
-    borderLeftWidth: 1,
-    paddingLeft: 8,
-    fontSize: 19,
-  },
-  taskContainer: {
-    height: 475,
-    width: 327,
-    alignSelf: 'center',
-    borderRadius: 20,
-    shadowColor: '#2E66E7',
-    backgroundColor: '#ffffff',
-    shadowOffset: {
-      width: 3,
-      height: 3,
-    },
-    shadowRadius: 20,
-    shadowOpacity: 0.2,
-    elevation: 5,
-    padding: 22,
-  },
-});
-
 Home.navigationOptions = navData => {
   return {
     headerTitle : 'Calendar',
-    headerStyle: {
-      backgroundColor: Platform.OS === 'android' ? Colors.primary : ''
-    },
-    headerTintColor: Platform.OS === 'android' ? 'white' : Colors.primary,
-    headerLeft : () => (
-        <Button title = "Menu"
-                color = {Colors.primary}
-                onPress = {() => navData.navigation.toggleDrawer()}
-        />
-    ),
   }
 };

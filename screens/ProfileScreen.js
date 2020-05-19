@@ -1,17 +1,12 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { StyleSheet, Text, View, Button, ActivityIndicator } from 'react-native';
+import React from 'react';
+import { StyleSheet, Text, View, Button } from 'react-native';
 import Colors from "../constants/Colors";
 
-import { useSelector, useDispatch } from 'react-redux';
-import * as profileActions from '../store/actions/profile';
+import { useSelector } from 'react-redux';
 import Card from "../components/UI/Card";
 import {LinearGradient} from "expo-linear-gradient";
 
 const ProfileScreen = props => {
-
-  const [isLoading, setIsLoading] = useState(false);
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [error, setError] = useState(null);
 
   const firstName = useSelector(state => state.profile.firstName);
   const lastName = useSelector(state => state.profile.lastName);
@@ -19,60 +14,7 @@ const ProfileScreen = props => {
   const tripCount = useSelector(state => state.profile.tripCount);
 
 
-  const dispatch = useDispatch();
-
-  const loadProfile = useCallback(async () =>{
-    setError(null);
-    setIsRefreshing(true);
-    try{
-        await dispatch(profileActions.fetchProfile());
-    }
-    catch(err){
-      setError(err.message);
-    }
-    setIsRefreshing(false);
-  },[dispatch,setIsLoading, setError]);
-
-  useEffect(() =>{
-    const willFocusSub = props.navigation.addListener(
-        'willFocus',
-        loadProfile
-    );
-
-    return() =>{
-      willFocusSub.remove();
-    };
-  },[loadProfile]);
-
-  useEffect(() => {
-    setIsLoading(true);
-    loadProfile().then(() => {
-      setIsLoading(false);
-    });
-  }, [dispatch, loadProfile]);
-
-  if (error) {
-    return (
-        <View style={styles.centered}>
-          <Text>An error occurred!</Text>
-          <Button
-              title="Try again"
-              onPress={loadProfile}
-              color={Colors.primary}
-          />
-        </View>
-    );
-  }
-
-  if (isLoading) {
-    return (
-        <View style={styles.centered}>
-          <ActivityIndicator size="large" color={Colors.primary} />
-        </View>
-    );
-  }
-
-  if(!isLoading && firstName == null){
+  if(firstName == null){
     return(
         <View style = {styles.myStyle} >
           <Text> You are yet to add Profile information! </Text>
@@ -106,16 +48,6 @@ const ProfileScreen = props => {
 ProfileScreen.navigationOptions = navData => {
   return {
     headerTitle : 'Profile',
-    headerStyle: {
-      backgroundColor: Platform.OS === 'android' ? Colors.primary : ''
-    },
-    headerTintColor: Platform.OS === 'android' ? 'white' : Colors.primary,
-    headerLeft : () => (
-        <Button title = "Menu"
-                color = {Colors.primary}
-                onPress = {() => navData.navigation.toggleDrawer()}
-        />
-    ),
   }
 };
 
@@ -134,6 +66,7 @@ const styles = StyleSheet.create({
   },
   cardStyle : {
       width : '80%',
+      height: '60%',
       justifyContent: 'center',
       alignItems: 'center',
   },

@@ -1,143 +1,81 @@
-import React, { Component } from "react";
-// import { StyleSheet, View } from "react-native";
-import {
-  View,
-  Image,
-  TouchableOpacity,
-  AsyncStorage,
-  ScrollView,
-  Text,
-  Dimensions,
-  Button, ActivityIndicator,
-  TextInput,
-  Switch,
-  StyleSheet,
-  Alert,
-  Platform,
-} from 'react-native';
-import MapView from "react-native-maps";
-import * as Location from "expo-location";
-import * as Permissions from "expo-permissions";
-import * as TaskManager from "expo-task-manager";
+import React, {useState, useEffect} from 'react';
+import {View, Text, StyleSheet, ActivityIndicator} from 'react-native';
+import MapView, {Circle, Marker} from 'react-native-maps';
+import * as Location from 'expo-location';
+import {MaterialIcons} from '@expo/vector-icons'
 import Colors from "../constants/Colors";
+import {getCurrentPosition} from "../utilityFunctions";
 
-const LOCATION_TASK_NAME = "background-location-task";
-
-export default class location extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      region: null,
-      error: '',
+const MapScreen = props => {
+    const [selectedLocation, setSelectedLocation] = useState(null);
+    const [currentLocation, setLocation] = useState(null);
+    const [accuracy, setAccuracy] = useState(0)
+    let mapRegion;
+    const selectLocationHandler = event => {
+        setSelectedLocation({
+            lat: event.nativeEvent.coordinate.latitude,
+            lng: event.nativeEvent.coordinate.longitude
+        });
     };
-  }
 
-  _getLocationAsync = async () => {
-    await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
-      enableHighAccuracy: true,
-      distanceInterval: 1,
-      timeInterval: 1000
-    });
-    // watchPositionAsync Return Lat & Long on Position Change
-    this.location = await Location.watchPositionAsync(
-      {
-        enableHighAccuracy: true,
-        distanceInterval: 1,
-        timeInterval: 1000
-      },
-      newLocation => {
-        let { coords } = newLocation;
-        // console.log(coords);
-        let region = {
-          latitude: coords.latitude,
-          longitude: coords.longitude,
-          latitudeDelta: 0.045,
-          longitudeDelta: 0.045
+    let markerCoordinates;
+
+    if (selectedLocation) {
+        markerCoordinates = {
+            latitude: selectedLocation.lat,
+            longitude: selectedLocation.lng
         };
-        this.setState({ region: region });
-      },
-      error => console.log(error)
-    );
-    return this.location;
-  };
-
-  async componentWillMount() {
-    // Asking for device location permission
-    const { status } = await Permissions.askAsync(Permissions.LOCATION);
-
-    if (status === "granted") {
-      this._getLocationAsync();
-    } else {
-      this.setState({ error: "Locations services needed" });
     }
-    // userId = (await AsyncStorage.getItem("userId")) || "none";
-    // userName = (await AsyncStorage.getItem("userName")) || "none";
-  }
 
-  render() {
-    return (
-      <View style={styles.container}>
-        <MapView
-          initialRegion={this.state.region}
-          showsCompass={true}
-          showsUserLocation={true}
-          rotateEnabled={true}
-          ref={map => {
-            this.map = map;
-          }}
-          style={{ flex: 1 }}
-        />
-      </View>
-    );
-  }
-}
+    useEffect(() => {
+        (async () => {
+            try {
+                let location = await getCurrentPosition();
+                // console.log(location);
+                if (location) {
+                    setLocation({
+                        latitude: location.coords.latitude,
+                        longitude: location.coords.longitude
+                    });
+                    setAccuracy(location.coords.accuracy);
+                }
+            } catch (e) {
+                console.log(e);
+            }
+        })()
+    }, []);
+    console.log(currentLocation);
 
-TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
-  if (error) {
-    console.log(error);
-    return;
-  }
-  if (data) {
-    const { locations } = data;
-    let lat = locations[0].coords.latitude;
-    let long = locations[0].coords.longitude;
-    // userId = (await AsyncStorage.getItem("userId")) || "none";
-
-    // Storing Received Lat & Long to DB by logged In User Id
-    // axios({
-    //   method: "POST",
-    //   url: "http://000.000.0.000/phpServer/ajax.php",
-    //   data: {
-    //     action: "saveLocation",
-    //     userId: 1,
-    //     lat,
-    //     long
-    //   }
-    // });
-    // console.log("Received new locations for user = ", userId, locations);
-  }
-});
+    mapRegion = {
+        ...currentLocation,
+        latitudeDelta: 0.1,
+        longitudeDelta: 0.05
+    };
+    if (currentLocation)
+        return (
+            <MapView
+                style={styles.map}
+                region={mapRegion}
+            >
+                <Marker coordinate={currentLocation} anchor={{x:0.5, y:0.5}}>
+                    <MaterialIcons name={'my-location'} color={Colors.primary} size={20}/>
+                </Marker>
+                <Circle center={currentLocation} radius={accuracy} strokeColor={'transparent'} fillColor={'rgba(0,0,155,0.1)'}/>
+            </MapView>
+        );
+    else {
+        return (
+            <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
+                <ActivityIndicator size="large" color={Colors.primary}/>
+            </View>
+        )
+    }
+};
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff"
-  }
+    map: {
+        flex: 1
+    }
 });
 
-// location.navigationOptions = navData => {
-//   return {
-//     headerTitle : 'Location',
-//     headerStyle: {
-//       backgroundColor: Platform.OS === 'android' ? Colors.primary : ''
-//     },
-//     headerTintColor: Platform.OS === 'android' ? 'white' : Colors.primary,
-//     headerLeft : () => (
-//         <Button title = "Menu"
-//                 color = {Colors.primary}
-//                 onPress = {() => navData.navigation.toggleDrawer()}
-//         />
-//     ),
-//   }
-// };
-
+export default MapScreen;
