@@ -9,7 +9,6 @@ import {getCurrentPosition} from "../utilityFunctions";
 const MapScreen = props => {
     const [selectedLocation, setSelectedLocation] = useState(null);
     const [currentLocation, setLocation] = useState(null);
-    const [accuracy, setAccuracy] = useState(0)
     let mapRegion;
     const selectLocationHandler = event => {
         setSelectedLocation({
@@ -34,33 +33,30 @@ const MapScreen = props => {
                 // console.log(location);
                 if (location) {
                     setLocation({
-                        latitude: location.coords.latitude,
-                        longitude: location.coords.longitude
+                        latitude: location.latitude,
+                        longitude: location.longitude
                     });
-                    setAccuracy(location.coords.accuracy);
                 }
             } catch (e) {
                 console.log(e);
             }
         })()
     }, []);
-    console.log(currentLocation);
 
     mapRegion = {
         ...currentLocation,
-        latitudeDelta: 0.1,
-        longitudeDelta: 0.05
+        latitudeDelta: 0.025,
+        longitudeDelta: 0.01
     };
     if (currentLocation)
         return (
             <MapView
                 style={styles.map}
                 region={mapRegion}
+                loadingEnabled={true}
+                showsUserLocation={true}
+                followsUserLocation={true}
             >
-                <Marker coordinate={currentLocation} anchor={{x:0.5, y:0.5}}>
-                    <MaterialIcons name={'my-location'} color={Colors.primary} size={20}/>
-                </Marker>
-                <Circle center={currentLocation} radius={accuracy} strokeColor={'transparent'} fillColor={'rgba(0,0,155,0.1)'}/>
             </MapView>
         );
     else {

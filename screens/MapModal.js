@@ -18,7 +18,6 @@ export default function MapModal(props) {
                     <MapView
                         style={{flex: 1}}
                         region={mapRegion}
-                        // provider={PROVIDER_GOOGLE}
                         loadingEnabled={true}
                     >
                         <Polyline coordinates={routeCoords} strokeWidth={3} />

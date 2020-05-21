@@ -37,10 +37,19 @@ const DutyScreen = props => {
         useEffect(() => {
             (async () => {
                 const isRunning = await Location.hasStartedLocationUpdatesAsync('watchLocationTask');
-                console.log(isRunning);
+                console.log('is location tracking still running? ' + isRunning);
             })();
             return () => {
-                TaskManager.getRegisteredTasksAsync().then(res => console.log(res));
+                TaskManager.getRegisteredTasksAsync().then(res => {
+                        if (res) {
+                            for (const i in res) {
+                                TaskManager.unregisterTaskAsync(res[i].taskName).then(() => {
+                                    console.log('unregistered the running task');
+                                });
+                            }
+                        }
+                    }
+                );
             }
         }, []);
 
@@ -51,7 +60,7 @@ const DutyScreen = props => {
                     const tripStartedAt = new Date();
                     try {
                         await Location.startLocationUpdatesAsync('watchLocationTask', {
-                            accuracy: Location.Accuracy.High,
+                            accuracy: Location.Accuracy.Highest,
                         });
                         await setTrackingInfo({
                             routeCoords: [],
@@ -69,7 +78,7 @@ const DutyScreen = props => {
                 let trackingObject = await getTrackingInfo();
                 await AsyncStorage.removeItem('tracker');
                 setTripData(trackingObject);
-                Alert.alert('Trip Details',`Your trip started at ${new Date(trackingObject.tripStartedAt).toLocaleTimeString()} and ended at
+                Alert.alert('Trip Details', `Your trip started at ${new Date(trackingObject.tripStartedAt).toLocaleTimeString()} and ended at
                 ${endTime.toLocaleTimeString()} covering ${trackingObject.distanceCovered.toFixed(2)} km`, [
                     {
                         text: 'View Full Report',
