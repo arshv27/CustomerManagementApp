@@ -9,16 +9,13 @@ import Colors from "../constants/Colors";
 export default function DataLoadingScreen(props) {
     const dispatch = useDispatch();
     const profile = useSelector(state => state.profile);
-
     useEffect(() => {
         (async () => {
             try {
                 const fetchProf = await dispatch(profileActions.fetchProfile());
-                // console.log(fetchProf);
                 props.navigation.replace(fetchProf['firebase_id'] ? 'Home' : 'SetupProfile');
-
             } catch (err) {
-                console.log(err);
+                console.log('DataLoading: ' + err);
             }
         })();
     }, []);

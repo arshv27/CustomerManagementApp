@@ -7,6 +7,10 @@ import {LinearGradient} from "expo-linear-gradient";
 import * as TaskManager from 'expo-task-manager';
 import haversine from 'haversine'
 import MapModal from "./MapModal";
+import Firebase from "../Firebase";
+import {getCurrentUser} from "../utilityFunctions";
+import {useDispatch, useSelector} from "react-redux";
+import {updateProfile} from "../store/actions/profile";
 
 async function setTrackingInfo(obj) {
     try {
@@ -33,6 +37,8 @@ const DutyScreen = props => {
         const [tracking, toggleTracking] = useState(false);
         const [isModalVisible, setVisibility] = useState(false);
         const [tripData, setTripData] = useState(null);
+        const dispatch = useDispatch();
+        const tripCount = useSelector(state =>  state.profile.tripCount);
 
         useEffect(() => {
             (async () => {
@@ -77,7 +83,15 @@ const DutyScreen = props => {
 
                 let trackingObject = await getTrackingInfo();
                 await AsyncStorage.removeItem('tracker');
+                trackingObject['tripEndedAt'] = endTime.toISOString();
                 setTripData(trackingObject);
+                try {
+                    await Firebase.database().ref('/trips').child(getCurrentUser().uid).push(trackingObject, async () => {
+                        dispatch(updateProfile({tripCount: tripCount+1}))
+                    });
+                } catch (e) {
+                    console.log(e);
+                }
                 Alert.alert('Trip Details', `Your trip started at ${new Date(trackingObject.tripStartedAt).toLocaleTimeString()} and ended at
                 ${endTime.toLocaleTimeString()} covering ${trackingObject.distanceCovered.toFixed(2)} km`, [
                     {

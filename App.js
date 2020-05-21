@@ -4,8 +4,6 @@ import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import ReduxThunk from 'redux-thunk';
 import TodoStore from './data/TodoStore';
-
-import authReducer from './store/reducers/auth';
 import NavigationContainer from "./navigation/NavigationContainer";
 import profileReducer from './store/reducers/profile';
 import productsReducer from './store/reducers/products';
@@ -16,7 +14,6 @@ enableScreens();
 
 const rootReducer = combineReducers(
     {
-        auth : authReducer,
         profile : profileReducer,
         products : productsReducer,
     });

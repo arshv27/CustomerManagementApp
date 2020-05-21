@@ -6,7 +6,7 @@ import {Button, View} from "react-native";
 export default function MapModal(props) {
     if (props.info) {
         const {routeCoords} = props.info;
-        console.log(routeCoords);
+        // console.log(routeCoords);
         const mapRegion = {
             ...routeCoords[Math.floor((routeCoords.length) / 2)],
             latitudeDelta: 0.05,

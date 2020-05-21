@@ -82,20 +82,21 @@ const SetupProfileScreen =  props => {
             if(old_firstName == null){
                 console.log(111);
                 await dispatch(
-                    profileActions.createProfile(
-                        formState.inputValues.firstName,
-                        formState.inputValues.lastName,
-                        formState.inputValues.employeeID,
-                    )
+                    profileActions.createProfile({
+                        firstName: formState.inputValues.firstName,
+                        lastName: formState.inputValues.lastName,
+                        employeeID: formState.inputValues.employeeID,
+                        tripCount: 0
+                    })
                 );
             }
             else{
                 await dispatch(
-                    profileActions.updateProfile(
-                        formState.inputValues.firstName,
-                        formState.inputValues.lastName,
-                        formState.inputValues.employeeID,
-                    )
+                    profileActions.updateProfile({
+                        firstName: formState.inputValues.firstName,
+                        lastName: formState.inputValues.lastName,
+                        employeeID: formState.inputValues.employeeID,
+                    })
                 );
             }
 

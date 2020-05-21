@@ -1,5 +1,6 @@
 import * as Location from "expo-location";
 import haversine from 'haversine';
+import Firebase from "./Firebase";
 
 export const getCurrentPosition = async () => {
     try {
@@ -10,6 +11,8 @@ export const getCurrentPosition = async () => {
         console.log(e);
     }
 };
+
+export const getCurrentUser = () => Firebase.auth().currentUser;
 
 export const withinRange = (center, coord, range) => {
     console.log(center, coord);
@@ -25,3 +28,5 @@ export const getOfficeCoords = async (address) => {
         console.log(e)
     }
 };
+
+//TODO: AsyncStorage functions

@@ -14,7 +14,7 @@ import { useDispatch } from 'react-redux';
 import Input from '../components/UI/Input';
 import Card from '../components/UI/Card';
 import Colors from '../constants/Colors';
-import * as authActions from '../store/actions/auth';
+import Firebase from "../Firebase";
 
 const FORM_INPUT_UPDATE = 'FORM_INPUT_UPDATE';
 
@@ -43,7 +43,6 @@ const formReducer = (state, action) => {
 
 const AuthScreen = props => {
     const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState(null);
     const [isSignup, setIsSignup] = useState(false);
     const dispatch = useDispatch();
 
@@ -59,32 +58,33 @@ const AuthScreen = props => {
         formIsValid: false
     });
 
-    useEffect(() => {
-        if (error) {
-            Alert.alert('An Error Occurred!', error, [{ text: 'Okay' }]);
-        }
-    }, [error]);
-
     const authHandler = async () => {
-        let action;
-        if (isSignup) {
-            action = authActions.signup(
-                formState.inputValues.email,
-                formState.inputValues.password
-            );
-        } else {
-            action = authActions.login(
-                formState.inputValues.email,
-                formState.inputValues.password
-            );
-        }
-        setError(null);
         setIsLoading(true);
         try {
-            await dispatch(action);
+            if (!isSignup) {
+                await Firebase.auth().signInWithEmailAndPassword(
+                    formState.inputValues.email,
+                    formState.inputValues.password
+                );
+            } else {
+                await Firebase.auth().createUserWithEmailAndPassword(
+                    formState.inputValues.email,
+                    formState.inputValues.password
+                );
+            }
+
             props.navigation.navigate('MainApp');
-        } catch (err) {
-            setError(err.message);
+        } catch (error) {
+            let errorCode = error.code;
+            let errorMessage = error.message;
+            if (errorCode === 'auth/wrong-password') {
+                alert('Wrong password.');
+            } else if (errorCode === 'auth/weak-password') {
+                alert('The password is too weak.');
+            } else {
+                alert(errorMessage);
+            }
+            console.log(error);
             setIsLoading(false);
         }
     };

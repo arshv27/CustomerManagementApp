@@ -18,7 +18,6 @@ import Home from '../screens/Home';
 
 import CreateTask from '../screens/CreateTask';
 
-import * as authActions from '../store/actions/auth';
 import Colors from "../constants/Colors";
 import ProductDetailsScreen from "../screens/ProductDetailsScreen";
 import DataLoadingScreen from "../screens/DataLoadingScreen";
@@ -27,6 +26,7 @@ import AttendanceScreen from "../screens/Attendance/AttendanceScreen";
 import LeaveScreen from "../screens/Attendance/Leave";
 import StatusScreen from "../screens/Attendance/Status";
 import FeedbackScreen from "../screens/FeedbackScreen";
+import Firebase from "../Firebase";
 
 export const defaultNavOptions = {
     headerStyle: {
@@ -166,9 +166,9 @@ const MainDrawerNavigator = createDrawerNavigator(
                             <Button
                                 title="Logout "
                                 color={Colors.primary}
-                                onPress={() => {
-                                    dispatch(authActions.logout());
-                                    // props.navigation.navigate('Auth');
+                                onPress={async () => {
+                                    await Firebase.auth().signOut();
+                                    props.navigation.navigate('Auth');
                                 }}
                             />
                         </View>
