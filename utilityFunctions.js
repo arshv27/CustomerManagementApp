@@ -12,8 +12,7 @@ export const getCurrentPosition = async () => {
     }
 };
 
-export const getCurrentUser = () => Firebase.auth().currentUser;
-
+export const getUserUID = () => Firebase.auth().currentUser.uid;
 export const withinRange = (center, coord, range) => {
     console.log(center, coord);
     return haversine(center, coord) < range;

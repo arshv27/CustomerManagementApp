@@ -1,16 +1,15 @@
 import Firebase from "../../Firebase";
-import {getCurrentUser} from "../../utilityFunctions";
+import {getUserUID} from "../../utilityFunctions";
 
 export const UPDATE_PROFILE = 'UPDATE_PROFILE';
-export const INC_COUNT = 'INC_COUNT';
+export const CLEAR_PROFILE = 'CLEAR_PROFILE';
 export const CREATE_PROFILE = 'CREATE_PROFILE';
 export const FETCH_PROFILE = 'FETCH_PROFILE';
 
 export const fetchProfile = () => {
     return async (dispatch, getState) => {
-        const user = getCurrentUser();
         try {
-            let snap = await Firebase.database().ref('/profiles/' + user.uid).once('value');
+            let snap = await Firebase.database().ref('/profiles/' + getUserUID()).once('value');
             let obj = snap.val();
             let reduxObject;
             for (const key in obj) {
@@ -34,10 +33,9 @@ export const fetchProfile = () => {
 
 export const updateProfile = (updateObject) => {
     return async (dispatch, getState) => {
-        const user = getCurrentUser();
         const firebase_id = getState().profile.firebase_id;
         try {
-            await Firebase.database().ref('/profiles/' + user.uid).child(firebase_id).update(updateObject);
+            await Firebase.database().ref('/profiles/' + getUserUID()).child(firebase_id).update(updateObject);
             dispatch({
                 type: UPDATE_PROFILE,
                 profileData: updateObject
@@ -50,9 +48,8 @@ export const updateProfile = (updateObject) => {
 
 export const createProfile = (newProfileObject) => {
     return async (dispatch, getState) => {
-        const user = getCurrentUser();
         try {
-            const newRef = Firebase.database().ref('/profiles/' + user.uid).push();
+            const newRef = Firebase.database().ref('/profiles/' + getUserUID()).push();
             await newRef.set(newProfileObject);
             dispatch({
                 type: CREATE_PROFILE,
@@ -65,4 +62,13 @@ export const createProfile = (newProfileObject) => {
             throw err;
         }
     };
+};
+
+export const signOut = () => {
+    return async (dispatch, getState) => {
+        await Firebase.auth().signOut();
+        dispatch({
+            type: CLEAR_PROFILE
+        });
+    }
 };

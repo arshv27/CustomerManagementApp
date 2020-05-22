@@ -80,7 +80,6 @@ const SetupProfileScreen =  props => {
 
         try {
             if(old_firstName == null){
-                console.log(111);
                 await dispatch(
                     profileActions.createProfile({
                         firstName: formState.inputValues.firstName,
@@ -89,8 +88,8 @@ const SetupProfileScreen =  props => {
                         tripCount: 0
                     })
                 );
-            }
-            else{
+                props.navigation.replace('Home');
+            } else {
                 await dispatch(
                     profileActions.updateProfile({
                         firstName: formState.inputValues.firstName,
@@ -98,9 +97,8 @@ const SetupProfileScreen =  props => {
                         employeeID: formState.inputValues.employeeID,
                     })
                 );
+                props.navigation.goBack();
             }
-
-            props.navigation.goBack();
         }
         catch(err){
             setError(err.message);

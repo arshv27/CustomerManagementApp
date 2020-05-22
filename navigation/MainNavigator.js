@@ -27,6 +27,8 @@ import LeaveScreen from "../screens/Attendance/Leave";
 import StatusScreen from "../screens/Attendance/Status";
 import FeedbackScreen from "../screens/FeedbackScreen";
 import Firebase from "../Firebase";
+import TripHistoryScreen from "../screens/TripHistoryScreen";
+import {signOut} from "../store/actions/profile";
 
 export const defaultNavOptions = {
     headerStyle: {
@@ -67,8 +69,7 @@ const HomeStack = createStackNavigator(
             headerMode: 'screen'
         }
     }
-)
-;
+);
 
 const DutyStack = createStackNavigator(
     {
@@ -76,7 +77,8 @@ const DutyStack = createStackNavigator(
             screen: DutyScreen,
             navigationOptions: navData => drawerMenu(navData)
         },
-        Map: MapScreen
+        Map: MapScreen,
+        Trips: TripHistoryScreen
     },
     {
         defaultNavigationOptions: defaultNavOptions
@@ -96,7 +98,12 @@ const CalendarStack = createStackNavigator(
     }
 );
 const FeedbackStack = createStackNavigator(
-    {Feedback : FeedbackScreen},
+    {
+        Feedback: {
+            screen: FeedbackScreen,
+            navigationOptions: navData => drawerMenu(navData)
+        }
+    },
     {
         defaultNavigationOptions: defaultNavOptions
     }
@@ -140,7 +147,7 @@ const MainDrawerNavigator = createDrawerNavigator(
                 drawerLabel: 'Calendar  '
             }
         },
-        Feedback : {
+        Feedback: {
             screen: FeedbackStack,
             navigationOptions: {
                 drawerLabel: 'Feedback  '
@@ -151,6 +158,9 @@ const MainDrawerNavigator = createDrawerNavigator(
     {
         contentOptions: {
             activeTintColor: Colors.primary
+        },
+        defaultNavigationOptions: {
+            drawerLockMode: 'locked-open',
         },
         initialRouteName: 'Home',
         contentComponent: props => {
@@ -167,7 +177,7 @@ const MainDrawerNavigator = createDrawerNavigator(
                                 title="Logout "
                                 color={Colors.primary}
                                 onPress={async () => {
-                                    await Firebase.auth().signOut();
+                                    await dispatch(signOut());
                                     props.navigation.navigate('Auth');
                                 }}
                             />

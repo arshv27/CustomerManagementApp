@@ -72,7 +72,6 @@ const AuthScreen = props => {
                     formState.inputValues.password
                 );
             }
-
             props.navigation.navigate('MainApp');
         } catch (error) {
             let errorCode = error.code;

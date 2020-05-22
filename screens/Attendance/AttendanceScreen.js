@@ -1,61 +1,91 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {StyleSheet, Text, View, Button, Alert, TouchableOpacity} from 'react-native';
-
 import Card from "../../components/UI/Card";
 import Colors from "../../constants/Colors";
-import * as profileActions from "../../store/actions/profile";
 import {useDispatch, useSelector} from "react-redux";
 import {LinearGradient} from "expo-linear-gradient";
-import * as Location from "expo-location";
-import {getCurrentPosition, withinRange, getOfficeCoords} from "../../utilityFunctions";
+import {getCurrentPosition, withinRange, getOfficeCoords, getUserUID} from "../../utilityFunctions";
+import Firebase from "../../Firebase";
+import moment from "moment";
 
 
 const AttendanceScreen = props => {
     const firstName = useSelector(state => state.profile.firstName);
-    const [attendanceModalVisibility, setAttendanceModalVisibility] = useState(false);
-    const [status, setStatus] = useState(null);
-    const [workType, setWorkType] = useState(null);
-    const [location, setLocation] = useState(null);
+    const lastName = useSelector(state => state.profile.lastName);
 
-    return(
-        <View style = {styles.screen} >
+    const attendanceHandler = async (val) => {
+        let attendanceObject;
+        const time = moment().format("HH:mm");
+        if (val === 'Leave') {
+            attendanceObject = {status: val, time, employee: `${firstName} ${lastName}`};
+            alert('Enjoy your leave!')
+        } else {
+            const user = await getCurrentPosition();
+            if (val === 'Office') {
+                const office = await getOfficeCoords('Eros Woodbury Tower');
+                if (withinRange(office, user, 0.05)) {
+                    attendanceObject = {
+                        status: 'Present',
+                        workType: val,
+                        time,
+                        employee: `${firstName} ${lastName}`
+                    };
+                } else {
+                    alert('You are not within 50 meters of the Office!')
+                }
+            } else {
+                attendanceObject = {
+                    status: 'Present',
+                    workType: val,
+                    time,
+                    employee: `${firstName} ${lastName}`,
+                    location: user
+                };
+            }
+        }
+        if (attendanceObject) {
+            console.log(attendanceObject);
+            await Firebase.database().ref('/attendance').child(moment().format('YYYY-MM-DD'))
+                .child(getUserUID()).set(attendanceObject, (e) => {
+                if (e && e.code === 'PERMISSION_DENIED') alert('You have already marked your attendance');
+                else if (e) console.log(e);
+                else alert('Attendance Marked!')
+            })
+        }
+    };
+
+    return (
+        <View style={styles.screen}>
             <LinearGradient colors={['#ffedff', '#ffe3ff']} style={styles.gradient}>
-                <Text style = {{fontSize : 25, fontWeight : 'bold',marginBottom : 125,marginTop: 50}}> Welcome, {firstName}! </Text>
-                <Card style = {styles.cardStyle}>
+                <Text style={{
+                    fontSize: 25,
+                    fontWeight: 'bold',
+                    marginBottom: 125,
+                    marginTop: 50
+                }}> Welcome, {firstName}! </Text>
+                <Card style={styles.cardStyle}>
                     <TouchableOpacity
-                        onPress= {() => Alert.alert((new Date()).toDateString(), 'Attendance Status', [
+                        onPress={() => Alert.alert((new Date()).toDateString(), 'Attendance Status', [
                             {
                                 text: 'Present',
                                 onPress: () => {
-                                    setAttendanceModalVisibility(true);
-                                    setStatus('Present');
                                     Alert.alert('Present', 'Work Details', [
                                         {
                                             text: 'Office',
                                             onPress: async () => {
-                                                const office = await getOfficeCoords('Eros Woodbury Tower');
-                                                const user = await getCurrentPosition();
-                                                if (withinRange(office, user, 0.05)) {
-                                                    setWorkType('Office');
-                                                    alert('Attendance Marked!')
-                                                }
-                                                else alert('You are not within 50 meters of the Office!')
+                                                await attendanceHandler('Office');
                                             }
                                         },
                                         {
                                             text: 'Outside Duty',
                                             onPress: async () => {
-                                                setWorkType('Outside');
-                                                setLocation(await getCurrentPosition());
-                                                alert('Attendance Marked!')
+                                                await attendanceHandler('Outside')
                                             }
                                         },
                                         {
                                             text: 'Work From Home',
                                             onPress: async () => {
-                                                setWorkType('Home');
-                                                setLocation(await getCurrentPosition());
-                                                alert('Attendance Marked!')
+                                                await attendanceHandler('Home');
                                             }
                                         }
                                     ])
@@ -63,24 +93,27 @@ const AttendanceScreen = props => {
                             },
                             {
                                 text: 'On leave',
-                                onPress: () => {
-                                    setStatus('Leave');
-                                    alert('Enjoy your leave!')
+                                onPress: async () => {
+                                    await attendanceHandler('Leave')
                                 }
                             }
                         ])}
                     >
-                        <Text color = {Colors.primary}>Mark Attendance</Text>
+                        <Text color={Colors.primary}>Mark Attendance</Text>
                     </TouchableOpacity>
                     <Button
-                        title = "Apply for Leave"
-                        onPress= {() => {props.navigation.navigate('Leave')}}
-                        color = {Colors.primary}
+                        title="Apply for Leave"
+                        onPress={() => {
+                            props.navigation.navigate('Leave')
+                        }}
+                        color={Colors.primary}
                     />
                     <Button
-                        title = "Colleague Leave Status"
-                        onPress= {() => {props.navigation.navigate('Status' )}}
-                        color = {Colors.primary}
+                        title="Colleague Leave Status"
+                        onPress={() => {
+                            props.navigation.navigate('Status')
+                        }}
+                        color={Colors.primary}
                     />
                 </Card>
             </LinearGradient>
@@ -91,7 +124,7 @@ const AttendanceScreen = props => {
 
 AttendanceScreen.navigationOptions = navData => {
     return {
-        headerTitle : 'Attendance',
+        headerTitle: 'Attendance',
     }
 };
 
@@ -99,10 +132,10 @@ const styles = StyleSheet.create({
     screen: {
         flex: 1,
     },
-    cardStyle : {
-        width : '70%',
-        height : '20%',
-        justifyContent: 'center',
+    cardStyle: {
+        width: '70%',
+        height: '30%',
+        justifyContent: 'space-evenly',
         alignItems: 'center',
     },
     gradient: {

@@ -8,7 +8,7 @@ import * as TaskManager from 'expo-task-manager';
 import haversine from 'haversine'
 import MapModal from "./MapModal";
 import Firebase from "../Firebase";
-import {getCurrentUser} from "../utilityFunctions";
+import {getUserUID} from "../utilityFunctions";
 import {useDispatch, useSelector} from "react-redux";
 import {updateProfile} from "../store/actions/profile";
 
@@ -86,7 +86,7 @@ const DutyScreen = props => {
                 trackingObject['tripEndedAt'] = endTime.toISOString();
                 setTripData(trackingObject);
                 try {
-                    await Firebase.database().ref('/trips').child(getCurrentUser().uid).push(trackingObject, async () => {
+                    await Firebase.database().ref('/trips').child(getUserUID()).push(trackingObject, async () => {
                         dispatch(updateProfile({tripCount: tripCount+1}))
                     });
                 } catch (e) {
@@ -118,6 +118,12 @@ const DutyScreen = props => {
                         <Button title={"Open Map"}
                                 onPress={() => {
                                     props.navigation.navigate('Map')
+                                }}
+                                color={Colors.primary}
+                        />
+                        <Button title={"Trip History"}
+                                onPress={() => {
+                                    props.navigation.navigate('Trips')
                                 }}
                                 color={Colors.primary}
                         />
@@ -171,7 +177,7 @@ const styles = StyleSheet.create({
     cardStyle: {
         width: '70%',
         height: '20%',
-        justifyContent: 'center',
+        justifyContent: 'space-evenly',
         alignItems: 'center',
     },
     gradient: {

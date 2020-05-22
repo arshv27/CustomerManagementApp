@@ -1,4 +1,4 @@
-import {FETCH_PROFILE, UPDATE_PROFILE, INC_COUNT, CREATE_PROFILE} from "../actions/profile";
+import {FETCH_PROFILE, UPDATE_PROFILE, INC_COUNT, CREATE_PROFILE, CLEAR_PROFILE} from "../actions/profile";
 
 const initialState = {
     firstName : null,
@@ -14,12 +14,13 @@ export default (state = initialState, action) => {
         case FETCH_PROFILE:
         case CREATE_PROFILE :
         case UPDATE_PROFILE :
-            console.log(action.profileData);
             return {
                 ...state,
                 ...action.profileData
             };
+        case CLEAR_PROFILE:
+            return initialState;
         default:
-            return state
+            return state;
     }
 }

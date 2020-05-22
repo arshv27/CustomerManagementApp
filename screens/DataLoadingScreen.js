@@ -13,7 +13,7 @@ export default function DataLoadingScreen(props) {
         (async () => {
             try {
                 const fetchProf = await dispatch(profileActions.fetchProfile());
-                props.navigation.replace(fetchProf['firebase_id'] ? 'Home' : 'SetupProfile');
+                props.navigation.replace(fetchProf && fetchProf['firebase_id'] ? 'Home' : 'SetupProfile');
             } catch (err) {
                 console.log('DataLoading: ' + err);
             }
