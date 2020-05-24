@@ -8,7 +8,7 @@ export const getCurrentPosition = async () => {
         const {coords: {latitude, longitude}} = location;
         return {latitude, longitude}
     } catch (e) {
-        console.log(e);
+        console.log(`getCurrentPosition: ${e}`);
     }
 };
 
@@ -21,11 +21,10 @@ export const withinRange = (center, coord, range) => {
 export const getOfficeCoords = async (address) => {
     try {
         const loc = await Location.geocodeAsync(address);
+        console.log(loc);
         const {latitude, longitude} = loc[0];
         return {latitude, longitude}
     } catch (e) {
-        console.log(e)
+        console.log(`getOfficeCoords: ${e}`)
     }
 };
-
-//TODO: AsyncStorage functions

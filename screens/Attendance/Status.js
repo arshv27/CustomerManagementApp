@@ -9,11 +9,21 @@ const StatusScreen = props => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const attendanceRef = Firebase.database().ref('/attendance').child(moment().format('YYYY-MM-DD'));
+        const attendanceRef = Firebase.database().ref('/attendance')
+            .child(moment().format('YYYY-MM-DD'))
+            .orderByChild("time")
+
         const attendanceCallback = (snap) => {
-            snap.val() && setList(Object.values(snap.val()));
+            let list = [];
+            if (snap.val()){
+                snap.forEach(attendance => {
+                    list = list.concat(attendance.val())
+                })
+                setList(list);
+            }
             setLoading(false)
         };
+
         attendanceRef.on('value', attendanceCallback);
         return () => attendanceRef.off('value', attendanceCallback);
     });
@@ -43,14 +53,15 @@ const StatusScreen = props => {
                 horizontail={false}
                 renderItem={({item}, index) => {
                     return (
-                        <View style={{justifyContent: 'space-between', flexDirection: 'row', alignItems: 'flex-start', marginBottom: 10}}>
+                        <View style={{justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center', marginBottom: 10}}>
                             <Text style={{fontSize: 23}}>{item.employee}</Text>
                             <View>
                                 <Text style={{
                                     color: item.status === 'Present' ? 'green' : 'red',
-                                    fontSize: 10
+                                    fontSize: 10,
+                                    textAlign: 'right'
                                 }}>{item.status}</Text>
-                                <Text style={{fontSize: 10}}>{item.time}</Text>
+                                <Text style={{fontSize: 10, textAlign: 'right'}}>{item.time}</Text>
                             </View>
                         </View>
                     )

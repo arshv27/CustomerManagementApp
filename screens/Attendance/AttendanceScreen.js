@@ -18,11 +18,10 @@ const AttendanceScreen = props => {
         const time = moment().format("HH:mm");
         if (val === 'Leave') {
             attendanceObject = {status: val, time, employee: `${firstName} ${lastName}`};
-            alert('Enjoy your leave!')
         } else {
             const user = await getCurrentPosition();
             if (val === 'Office') {
-                const office = await getOfficeCoords('Eros Woodbury Tower');
+                const office = await getOfficeCoords('Om Satyam Apartments');
                 if (withinRange(office, user, 0.05)) {
                     attendanceObject = {
                         status: 'Present',
@@ -49,7 +48,8 @@ const AttendanceScreen = props => {
                 .child(getUserUID()).set(attendanceObject, (e) => {
                 if (e && e.code === 'PERMISSION_DENIED') alert('You have already marked your attendance');
                 else if (e) console.log(e);
-                else alert('Attendance Marked!')
+                else if (val !== 'Leave') alert('Attendance Marked!');
+                else alert('Enjoy your leave!')
             })
         }
     };

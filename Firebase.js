@@ -5,7 +5,7 @@ const firebaseConfig = {
     authDomain: 'shop-app-77d6d.firebaseapp.com',
     databaseURL: 'https://shop-app-77d6d.firebaseio.com',
     projectId: 'shop-app-77d6d',
-    storageBucket: 'shop-app-77d6d.appspot.com/files',
+    storageBucket: 'gs://shop-app-77d6d.appspot.com',
 };
 
 // Initialize Firebase

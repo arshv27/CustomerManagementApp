@@ -38,25 +38,16 @@ const DutyScreen = props => {
         const [isModalVisible, setVisibility] = useState(false);
         const [tripData, setTripData] = useState(null);
         const dispatch = useDispatch();
-        const tripCount = useSelector(state =>  state.profile.tripCount);
+        const tripCount = useSelector(state => state.profile.tripCount);
 
         useEffect(() => {
-            (async () => {
-                const isRunning = await Location.hasStartedLocationUpdatesAsync('watchLocationTask');
-                console.log('is location tracking still running? ' + isRunning);
-            })();
-            return () => {
-                TaskManager.getRegisteredTasksAsync().then(res => {
-                        if (res) {
-                            for (const i in res) {
-                                TaskManager.unregisterTaskAsync(res[i].taskName).then(() => {
-                                    console.log('unregistered the running task');
-                                });
-                            }
-                        }
+            TaskManager.getRegisteredTasksAsync().then(res => {
+                    if (res.length) {
+                        console.log('still running')
+                        toggleTracking(true);
                     }
-                );
-            }
+                }
+            );
         }, []);
 
         const handleTripPress = async () => {
@@ -84,10 +75,11 @@ const DutyScreen = props => {
                 let trackingObject = await getTrackingInfo();
                 await AsyncStorage.removeItem('tracker');
                 trackingObject['tripEndedAt'] = endTime.toISOString();
+                trackingObject['attachments'] = null;
                 setTripData(trackingObject);
                 try {
                     await Firebase.database().ref('/trips').child(getUserUID()).push(trackingObject, async () => {
-                        dispatch(updateProfile({tripCount: tripCount+1}))
+                        dispatch(updateProfile({tripCount: tripCount + 1}))
                     });
                 } catch (e) {
                     console.log(e);
