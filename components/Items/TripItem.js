@@ -6,19 +6,21 @@ import {useActionSheet} from "@expo/react-native-action-sheet";
 import Colors from "../../constants/Colors";
 import * as ImagePicker from "expo-image-picker";
 import Firebase from "../../Firebase";
+import 'react-native-get-random-values';
 import {v4 as uuid4} from "uuid";
 import * as DocumentPicker from 'expo-document-picker';
 import {getUserUID} from "../../utilityFunctions";
 import {MaterialIcons} from "@expo/vector-icons";
+import moment from "moment";
 
 export default function TripItem(props) {
     const {showActionSheetWithOptions} = useActionSheet()
     const [isModalVisible, setVisibility] = useState(false);
     const [uploading, setUploading] = useState(false)
     const trip = props.trip.item;
-    let start = new Date(trip.tripStartedAt);
-    let end = new Date(trip.tripEndedAt);
-    let duration = end - start;
+    let start = moment(trip.tripStartedAt);
+    let end = moment(trip.tripEndedAt);
+    let duration = end.diff(start, 'minutes', true)
 
 
     const documentCallback = async (button) => {
@@ -85,15 +87,37 @@ export default function TripItem(props) {
 
     const renderAttachment = (attachment) => {
         if (attachment.type === 'pdf') {
-            return (<View style={{height: 100, width: 100, alignItems: 'center', justifyContent: 'center', marginRight: 3, borderWidth: 1, borderRightColor: 'black'}}>
-                <View style={{alignItems: 'center', justifyContent: 'center', height: '80%', width: '100%', backgroundColor: 'ghostwhite'}}>
+            return (<View style={{
+                height: 100,
+                width: 100,
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginRight: 3,
+                borderWidth: 0.5,
+                borderRightColor: 'black'
+            }}>
+                <View style={{
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: '80%',
+                    width: '100%',
+                    backgroundColor: 'ghostwhite'
+                }}>
                     <MaterialIcons
                         name={'picture-as-pdf'}
                         size={35}
                         color={Colors.primary}
                     />
                 </View>
-                <View style={{height: '20%', width: '100%', backgroundColor: 'gainsboro', alignItems: 'center', justifyContent: 'center', borderTopWidth: 1, borderColor: 'black'}}>
+                <View style={{
+                    height: '20%',
+                    width: '100%',
+                    backgroundColor: 'gainsboro',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderTopWidth: 0.5,
+                    borderColor: 'black'
+                }}>
                     <Text style={{textAlign: 'center', fontSize: 8}}>{attachment.fileName}</Text>
                 </View>
             </View>)
@@ -101,12 +125,13 @@ export default function TripItem(props) {
             return (<Image source={{uri: attachment.url}} style={{height: 100, width: 100, marginRight: 3}}/>)
         }
     }
+    const toRender = trip.attachments.length;
 
     return (
         <>
             <Card key={start} style={{marginBottom: 10, width: '95%', alignSelf: 'center'}}>
-                <Text style={{fontWeight: 'bold', fontSize: 24}}>
-                    {start.toLocaleString()}
+                <Text style={{fontWeight: 'bold', fontSize: 22}}>
+                    {start.format("ddd, MMM Do YYYY, h:mm a")}
                 </Text>
                 <View style={{
                     flexDirection: 'row',
@@ -116,19 +141,20 @@ export default function TripItem(props) {
                 }}>
                     <View>
                         <Text style={{fontSize: 18}}>Duration</Text>
-                        <Text>{(duration / 60000).toFixed(2)} mins</Text>
+                        <Text>{(duration).toFixed(2)} mins</Text>
                     </View>
                     <View>
                         <Text style={{fontSize: 18, textAlign: 'right'}}>Distance Covered</Text>
                         <Text style={{textAlign: 'right'}}>{trip.distanceCovered.toFixed(2)} km</Text>
                     </View>
                 </View>
-                <Text style={{fontSize: 18, fontWeight: "100", marginBottom: 5}}>Attachments</Text>
+                {toRender ? <Text style={{fontSize: 18, fontWeight: "100"}}>Attachments</Text> : null}
                 <FlatList
                     data={trip.attachments}
                     keyExtractor={(item) => item.url}
                     renderItem={({item}) => renderAttachment(item)}
                     horizontal={true}
+                    style={{marginVertical: 5}}
                 />
                 <View style={{
                     alignSelf: 'flex-end',
