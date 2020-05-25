@@ -5,6 +5,7 @@ import {ActivityIndicator, TouchableOpacity, View} from 'react-native';
 import {Ionicons} from "@expo/vector-icons";
 import HomeScreen from "./HomeScreen";
 import Colors from "../constants/Colors";
+import {fetchProducts} from "../store/actions/products";
 
 export default function DataLoadingScreen(props) {
     const dispatch = useDispatch();
@@ -12,6 +13,7 @@ export default function DataLoadingScreen(props) {
     useEffect(() => {
         (async () => {
             try {
+                await dispatch(fetchProducts())
                 const fetchProf = await dispatch(profileActions.fetchProfile());
                 props.navigation.replace(fetchProf && fetchProf['firebase_id'] ? 'Home' : 'SetupProfile');
             } catch (err) {

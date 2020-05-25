@@ -1,18 +1,18 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, Button } from "react-native";
+import {View, Text, StyleSheet, Button, Image} from "react-native";
 import Colors from "../../constants/Colors";
 
 
 const ProductItem = props => {
     return (
-        <View style = {styles.product} >
-                <Image source={props.image} style = {styles.image} resizeMode={'contain'} />
-                <Text style = {styles.title} >Product: {props.title}</Text>
-                <Text style = {styles.price} >Base Price: Rs.{props.base_price.toFixed(2)}</Text>
-                <Button title = "View Details"
-                        onPress = {props.onViewDetail}
-                        color = {Colors.primary}
-                />
+        <View style={styles.product}>
+            <Image source={{uri: props.image}} style = {styles.image} resizeMode={'contain'} />
+            <Text style={styles.title}>Product: {props.title}</Text>
+            <Text style={styles.price}>Base Price: Rs.{props.base_price.toFixed(2)}</Text>
+            <Button title="View Details"
+                    onPress={props.onViewDetail}
+                    color={Colors.primary}
+            />
         </View>
     );
 };
@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
         height: 300,
         margin: 5,
         flexDirection: 'column',
-        flex: 1/2,
+        flex: 1 / 2,
         alignItems: 'center',
         justifyContent: 'space-evenly'
     },

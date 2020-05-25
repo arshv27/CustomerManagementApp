@@ -64,8 +64,8 @@ export default function TripItem(props) {
             } catch (e) {
                 console.log(`while blobbing: ${e}`)
             }
-            const newRef = Firebase.database().ref('/trips').child(getUserUID()).child(trip.key)
-                .child('attachments').push()
+            const newRef = Firebase.database().ref('/trips').child(getUserUID())
+                .child(trip.key).child('attachments').push()
             const fileName = doc.name || `${newRef.key}.jpg`
             Firebase.storage().ref(`/trips/${trip.key}/${fileName}`).put(blob)
                 .then(async (snapshot) => {
@@ -73,10 +73,10 @@ export default function TripItem(props) {
                     let url = await snapshot.ref.getDownloadURL()
                     const docObject = {url, fileName, type: doc.name ? 'pdf' : 'image'}
                     await newRef.set(docObject, (e) => {
-                            if (e) console.log(`While setting attachment url: ${e}`)
-                            setUploading(false);
-                            alert('Upload complete')
-                        })
+                        if (e) console.log(`While setting attachment url: ${e}`)
+                        setUploading(false);
+                        alert('Upload complete')
+                    })
                 })
                 .catch((error) => {
                     console.log(error);

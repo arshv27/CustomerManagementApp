@@ -33,7 +33,7 @@ export default function ProductDetailsScreen(props) {
 
     return (
         <View>
-            <Image source={image} style={styles.image} resizeMode={'center'}/>
+            <Image source={{uri: image}} style={styles.image} resizeMode={'center'}/>
             {details}
         </View>
     )
