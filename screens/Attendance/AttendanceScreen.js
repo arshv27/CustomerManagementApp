@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {StyleSheet, Text, View, Button, Alert, TouchableOpacity} from 'react-native';
+import {StyleSheet, Text, View, Button, Alert, TouchableOpacity, ActivityIndicator} from 'react-native';
 import Card from "../../components/UI/Card";
 import Colors from "../../constants/Colors";
 import {useDispatch, useSelector} from "react-redux";
@@ -12,16 +12,21 @@ import moment from "moment";
 const AttendanceScreen = props => {
     const firstName = useSelector(state => state.profile.firstName);
     const lastName = useSelector(state => state.profile.lastName);
+    const [marking, setMarking] = useState(false);
 
     const attendanceHandler = async (val) => {
         let attendanceObject;
+        setMarking(true);
         const time = moment().format("HH:mm");
         if (val === 'Leave') {
             attendanceObject = {status: val, time, employee: `${firstName} ${lastName}`};
         } else {
             const user = await getCurrentPosition();
             if (val === 'Office') {
-                const office = await getOfficeCoords('Om Satyam Apartments');
+                const office = {
+                    "latitude": 28.612019,
+                    "longitude": 77.374051,
+                }
                 if (withinRange(office, user, 0.05)) {
                     attendanceObject = {
                         status: 'Present',
@@ -30,6 +35,7 @@ const AttendanceScreen = props => {
                         employee: `${firstName} ${lastName}`
                     };
                 } else {
+                    setMarking(false)
                     alert('You are not within 50 meters of the Office!')
                 }
             } else {
@@ -46,11 +52,12 @@ const AttendanceScreen = props => {
             console.log(attendanceObject);
             await Firebase.database().ref('/attendance').child(moment().format('YYYY-MM-DD'))
                 .child(getUserUID()).set(attendanceObject, (e) => {
-                if (e && e.code === 'PERMISSION_DENIED') alert('You have already marked your attendance');
-                else if (e) console.log(e);
-                else if (val !== 'Leave') alert('Attendance Marked!');
-                else alert('Enjoy your leave!')
-            })
+                    setMarking(false);
+                    if (e && e.code === 'PERMISSION_DENIED') alert('You have already marked your attendance');
+                    else if (e) console.log(e);
+                    else if (val !== 'Leave') alert('Attendance Marked!');
+                    else alert('Enjoy your leave!')
+                })
         }
     };
 
@@ -64,7 +71,10 @@ const AttendanceScreen = props => {
                     marginTop: 50
                 }}> Welcome, {firstName}! </Text>
                 <Card style={styles.cardStyle}>
-                    <TouchableOpacity
+
+                    {marking
+                        ? <ActivityIndicator size="small" color={Colors.primary}/>
+                        : <TouchableOpacity
                         onPress={() => Alert.alert((new Date()).toDateString(), 'Attendance Status', [
                             {
                                 text: 'Present',
@@ -100,7 +110,7 @@ const AttendanceScreen = props => {
                         ])}
                     >
                         <Text color={Colors.primary}>Mark Attendance</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity>}
                     <Button
                         title="Apply for Leave"
                         onPress={() => {

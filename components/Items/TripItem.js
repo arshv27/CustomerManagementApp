@@ -7,7 +7,6 @@ import Colors from "../../constants/Colors";
 import * as ImagePicker from "expo-image-picker";
 import Firebase from "../../Firebase";
 import 'react-native-get-random-values';
-import {v4 as uuid4} from "uuid";
 import * as DocumentPicker from 'expo-document-picker';
 import {getUserUID} from "../../utilityFunctions";
 import {MaterialIcons} from "@expo/vector-icons";
@@ -65,15 +64,15 @@ export default function TripItem(props) {
             } catch (e) {
                 console.log(`while blobbing: ${e}`)
             }
-            const fileName = doc.name || `${uuid4()}.jpg`
+            const newRef = Firebase.database().ref('/trips').child(getUserUID()).child(trip.key)
+                .child('attachments').push()
+            const fileName = doc.name || `${newRef.key}.jpg`
             Firebase.storage().ref(`/trips/${trip.key}/${fileName}`).put(blob)
                 .then(async (snapshot) => {
                     blob.close();
                     let url = await snapshot.ref.getDownloadURL()
                     const docObject = {url, fileName, type: doc.name ? 'pdf' : 'image'}
-                    await Firebase.database().ref('/trips').child(getUserUID())
-                        .child(trip.key).child('attachments')
-                        .push(docObject, (e) => {
+                    await newRef.set(docObject, (e) => {
                             if (e) console.log(`While setting attachment url: ${e}`)
                             setUploading(false);
                             alert('Upload complete')

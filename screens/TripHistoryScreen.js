@@ -34,7 +34,7 @@ export default function TripHistoryScreen(props) {
     }, []);
 
     if (loading) return (
-        <View style={styles.screen}>
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
             <ActivityIndicator size="large" color={Colors.primary}/>
         </View>
     )
