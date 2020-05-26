@@ -74,27 +74,33 @@ const DutyScreen = props => {
 
                 let trackingObject = await getTrackingInfo();
                 await AsyncStorage.removeItem('tracker');
-                trackingObject['tripEndedAt'] = endTime.toISOString();
-                trackingObject['attachments'] = null;
-                setTripData(trackingObject);
-                try {
-                    await Firebase.database().ref('/trips').child(getUserUID()).push(trackingObject, async () => {
-                        dispatch(updateProfile({tripCount: tripCount + 1}))
-                    });
-                } catch (e) {
-                    console.log(e);
-                }
-                Alert.alert('Trip Details', `Your trip started at ${new Date(trackingObject.tripStartedAt).toLocaleTimeString()} and ended at
-                ${endTime.toLocaleTimeString()} covering ${trackingObject.distanceCovered.toFixed(2)} km`, [
-                    {
-                        text: 'View Full Report',
-                        onPress: () => setVisibility(true)
-                    },
-                    {
-                        text: 'Ok',
-                        style: 'cancel'
+                if (trackingObject.routeCoords.length) {
+                    trackingObject['tripEndedAt'] = endTime.toISOString();
+                    setTripData(trackingObject);
+                    try {
+                        await Firebase.database().ref('/trips').child(getUserUID()).push(trackingObject, async () => {
+                            dispatch(updateProfile({tripCount: tripCount + 1}))
+                        });
+                    } catch (e) {
+                        console.log(e);
                     }
-                ])
+                    Alert.alert('Trip Details', `Your trip started at 
+                    ${new Date(trackingObject.tripStartedAt).toLocaleTimeString()} and ended at 
+                    ${endTime.toLocaleTimeString()} covering 
+                    ${trackingObject.distanceCovered.toFixed(2)} km`,
+                        [
+                            {
+                                text: 'View Full Report',
+                                onPress: () => setVisibility(true)
+                            },
+                            {
+                                text: 'Ok',
+                                style: 'cancel'
+                            }
+                        ])
+                } else {
+                    alert("We weren't able to get any location updates, Sorry!")
+                }
             }
             toggleTracking(!tracking);
         };

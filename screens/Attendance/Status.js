@@ -55,13 +55,13 @@ const StatusScreen = props => {
                     return (
                         <View style={{justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center', marginBottom: 10}}>
                             <Text style={{fontSize: 23}}>{item.employee}</Text>
-                            <View>
+                            <View style={{justifyContent: 'center'}}>
                                 <Text style={{
                                     color: item.status === 'Present' ? 'green' : 'red',
                                     fontSize: 10,
                                     textAlign: 'right'
                                 }}>{item.status}</Text>
-                                <Text style={{fontSize: 10, textAlign: 'right'}}>{item.time}</Text>
+                                {item.time ? <Text style={{fontSize: 10, textAlign: 'right'}}>{item.time}</Text> : null}
                             </View>
                         </View>
                     )

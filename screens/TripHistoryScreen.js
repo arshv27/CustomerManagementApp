@@ -56,7 +56,7 @@ export default function TripHistoryScreen(props) {
                         }}
                         style={{width: "95%"}}
                         horizontail={false}
-                        renderItem={(item, index) => <TripItem trip={item}/>}
+                        renderItem={(item, index) => <TripItem trip={item} navigation={props.navigation}/>}
                     />
                 </LinearGradient>
             </View>

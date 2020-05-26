@@ -29,6 +29,7 @@ import FeedbackScreen from "../screens/FeedbackScreen";
 import Firebase from "../Firebase";
 import TripHistoryScreen from "../screens/TripHistoryScreen";
 import {signOut} from "../store/actions/profile";
+import AttachmentView from "../components/Items/AttachmentView";
 
 export const defaultNavOptions = {
     headerStyle: {
@@ -78,7 +79,8 @@ const DutyStack = createStackNavigator(
             navigationOptions: navData => drawerMenu(navData)
         },
         Map: MapScreen,
-        Trips: TripHistoryScreen
+        Trips: TripHistoryScreen,
+        Attachment: AttachmentView
     },
     {
         defaultNavigationOptions: defaultNavOptions

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, TouchableOpacity, Image, ActivityIndicator, Platform, FlatList} from 'react-native';
+import {View, Text, TouchableOpacity, Image, ActivityIndicator, FlatList} from 'react-native';
 import Card from "../UI/Card";
 import MapModal from "../../screens/MapModal";
 import {useActionSheet} from "@expo/react-native-action-sheet";
@@ -19,7 +19,7 @@ export default function TripItem(props) {
     const trip = props.trip.item;
     let start = moment(trip.tripStartedAt);
     let end = moment(trip.tripEndedAt);
-    let duration = end.diff(start, 'minutes', true)
+    let duration = end.diff(start, 'minutes', true);
 
 
     const documentCallback = async (button) => {
@@ -84,47 +84,67 @@ export default function TripItem(props) {
         }
     }
 
+    useEffect(() => {
+        trip.attachments.forEach(a => {
+            if (a.type === "image"){
+                Image.prefetch(a.url);
+            }
+        })
+    },[trip.attachments])
+
     const renderAttachment = (attachment) => {
         if (attachment.type === 'pdf') {
-            return (<View style={{
-                height: 100,
-                width: 100,
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginRight: 3,
-                borderWidth: 0.5,
-                borderRightColor: 'black'
-            }}>
-                <View style={{
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    height: '80%',
-                    width: '100%',
-                    backgroundColor: 'ghostwhite'
+            return (
+                <TouchableOpacity onPress={() => {
+                    props.navigation.navigate('Attachment', {...attachment})
                 }}>
-                    <MaterialIcons
-                        name={'picture-as-pdf'}
-                        size={35}
-                        color={Colors.primary}
-                    />
-                </View>
-                <View style={{
-                    height: '20%',
-                    width: '100%',
-                    backgroundColor: 'gainsboro',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    borderTopWidth: 0.5,
-                    borderColor: 'black'
-                }}>
-                    <Text style={{textAlign: 'center', fontSize: 8}}>{attachment.fileName}</Text>
-                </View>
-            </View>)
+                    <View style={{
+                        height: 100,
+                        width: 100,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        marginRight: 3,
+                        borderWidth: 0.5,
+                        borderRightColor: 'black'
+                    }}>
+                        <View style={{
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            height: '80%',
+                            width: '100%',
+                            backgroundColor: 'ghostwhite'
+                        }}>
+                            <MaterialIcons
+                                name={'picture-as-pdf'}
+                                size={35}
+                                color={Colors.primary}
+                            />
+                        </View>
+                        <View style={{
+                            height: '20%',
+                            width: '100%',
+                            backgroundColor: 'gainsboro',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            borderTopWidth: 0.5,
+                            borderColor: 'black'
+                        }}>
+                            <Text style={{textAlign: 'center', fontSize: 8}}>{attachment.fileName}</Text>
+                        </View>
+                    </View>
+                </TouchableOpacity>
+            )
         } else {
-            return (<Image source={{uri: attachment.url}} style={{height: 100, width: 100, marginRight: 3}}/>)
+
+            return (
+                <TouchableOpacity onPress={() => {
+                    props.navigation.navigate('Attachment', {...attachment})
+                }}>
+                    <Image progressiveRenderingEnabled source={{uri: attachment.url}} style={{height: 100, width: 100, marginRight: 3}}/>
+                </TouchableOpacity>
+            )
         }
     }
-    const toRender = trip.attachments.length;
 
     return (
         <>
@@ -147,7 +167,7 @@ export default function TripItem(props) {
                         <Text style={{textAlign: 'right'}}>{trip.distanceCovered.toFixed(2)} km</Text>
                     </View>
                 </View>
-                {toRender ? <Text style={{fontSize: 18, fontWeight: "100"}}>Attachments</Text> : null}
+                {trip.attachments.length ? <Text style={{fontSize: 18, fontWeight: "100"}}>Attachments</Text> : null}
                 <FlatList
                     data={trip.attachments}
                     keyExtractor={(item) => item.url}
