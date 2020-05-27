@@ -19,7 +19,7 @@ const ServicePicker = (props) => {
                     <Picker.Item label="B" value="Service B"/>
                     <Picker.Item label="C" value="Service C"/>
                 </Picker>
-                <Button title={"Done"}
+                <Button title={"Done  "}
                         onPress={props.close}
                         color={Colors.primary}
                 />
